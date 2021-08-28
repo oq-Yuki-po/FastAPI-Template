@@ -22,4 +22,4 @@ RUN pip install poetry \
    && poetry install \
    && rm -rf /tmp/pip-tmp
 
-ENV PYTHONPATH "${PYTHONPATH}:/workspaces/FastAPI-Template"
+ENV PYTHONPATH "${PYTHONPATH}:/workspace"

@@ -1,6 +1,6 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.191.1/containers/python-3-postgres
-// Update the VARIANT arg in docker-compose.yml to pick a Python version: 3, 3.8, 3.7, 3.6 
+// Update the VARIANT arg in docker-compose.yml to pick a Python version: 3, 3.8, 3.7, 3.6
 {
 	"name": "FastAPI & PostgreSQL",
 	"dockerComposeFile": "docker-compose.yml",
@@ -17,7 +17,7 @@
 				"name": "Container database",
 				"driver": "PostgreSQL",
 				"previewLimit": 50,
-				"server": "localhost",
+				"server": "postgres",
 				"port": 5432,
 				"database": "postgres",
 				"username": "postgres",
