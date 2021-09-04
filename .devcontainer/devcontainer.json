@@ -2,14 +2,10 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.191.1/containers/python-3-postgres
 // Update the VARIANT arg in docker-compose.yml to pick a Python version: 3, 3.8, 3.7, 3.6
 {
-	"name": "FastAPI & PostgreSQL",
+	"name": "FastAPI & Nginx & PostgreSQL",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspace",
-	"runArgs": [
-		"-p",
-		"80:8000"
-	],
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"sqltools.connections": [
