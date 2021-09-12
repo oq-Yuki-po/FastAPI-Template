@@ -94,7 +94,8 @@
 		"ionutvmi.path-autocomplete",
 		"ms-azuretools.vscode-docker",
 		"mtxr.sqltools",
-		"mtxr.sqltools-driver-pg"
+		"mtxr.sqltools-driver-pg",
+		"ms-vsliveshare.vsliveshare"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [5000, 5432],
