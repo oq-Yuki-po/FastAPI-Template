@@ -22,4 +22,8 @@ RUN pip install poetry \
    && poetry install \
    && rm -rf /tmp/pip-tmp
 
+WORKDIR  /var/log/gunicorn
+RUN chown -R vscode /var/log/gunicorn
+
+ENV TZ Asia/Tokyo
 ENV PYTHONPATH "${PYTHONPATH}:/workspace"

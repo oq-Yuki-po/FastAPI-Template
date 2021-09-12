@@ -5,5 +5,5 @@ FastApi Template
 
 ```
 cd app
-uvicorn main:app --reload --host 0.0.0.0
+gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000 --log-config logging.conf --reload
 ```
