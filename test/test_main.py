@@ -1,9 +1,6 @@
 import ast
 
 from fastapi import status
-from fastapi.testclient import TestClient
-
-from app.main import app
 
 
 def test_root_get(app_client):
