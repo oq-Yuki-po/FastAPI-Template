@@ -14,10 +14,10 @@ class BookModel(BaseModel):
     """
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(256))
+    title = Column(String(256), nullable=False, comment='book title')
     author_id = Column(Integer, ForeignKey(AuthorModel.id))
-    isbn = Column(String(13))
-    cover_path = Column(String(256))
+    isbn = Column(String(13), unique=True, nullable=False, comment='book isbn')
+    cover_path = Column(String(256), unique=True, nullable=False, server_default="none", comment='book cover path')
 
     authors = relationship(AuthorModel, backref="books")
 
