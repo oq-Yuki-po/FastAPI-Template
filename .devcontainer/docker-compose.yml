@@ -49,5 +49,23 @@ services:
       - ./web/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./web/ssl:/etc/nginx/ssl
 
+  schemaspy:
+    image: schemaspy/schemaspy:snapshot
+    container_name: "schemaspy"
+    volumes:
+      - ./schemaspy/output:/output
+      - ./schemaspy/postgresql-42.4.0.jar:/postgresql-42.4.0.jar
+      - ./schemaspy/make.sh:/make.sh
+    tty: true
+    entrypoint: /bin/sh
+    env_file: app.env
+
+  schemaspy_web:
+    image: nginx:alpine
+    container_name: "schemaspy_web"
+    ports:
+      - "8081:80"
+    volumes:
+      - ./schemaspy/output:/usr/share/nginx/html
 volumes:
   postgres-data:

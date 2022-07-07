@@ -7,3 +7,9 @@ FastApi Template
 cd app
 gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000 --log-config logging.conf --reload
 ```
+
+## Make ER Diagram
+
+```
+docker exec -it schemaspy sh make.sh
+```
