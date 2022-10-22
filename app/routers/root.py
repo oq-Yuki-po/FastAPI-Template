@@ -1,5 +1,7 @@
+from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
+router = APIRouter()
 
 class RootIn(BaseModel):
 
