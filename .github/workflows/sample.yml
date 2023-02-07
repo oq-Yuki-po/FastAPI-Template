@@ -4,6 +4,9 @@ name: Python application
 
 on: [push]
 
+# add pythonpath
+env:
+  PYTHONPATH: /home/runner/work/${{ github.repository }}
 jobs:
   build:
 
