@@ -6,7 +6,7 @@ on: [push]
 
 # add pythonpath
 env:
-  PYTHONPATH: /home/runner/work/${{ github.repository }}
+  PYTHONPATH: /home/runner/work/Python-Flask-App/Python-Flask-App
 jobs:
   build:
 
