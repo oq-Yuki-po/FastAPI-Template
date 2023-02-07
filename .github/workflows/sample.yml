@@ -6,7 +6,7 @@ on: [push]
 
 # add pythonpath
 env:
-  PYTHONPATH: /home/runner/work/Python-Flask-App/Python-Flask-App
+  PYTHONPATH: /home/runner/work/FastAPI-Template/FastAPI-Template
 jobs:
   build:
 
