@@ -7,7 +7,7 @@ env:
   POSTGRES_USER: postgres
   POSTGRES_DB: postgres
   POSTGRES_PASSWORD: postgres
-  POSTGRES_SERVER: postgres
+  POSTGRES_SERVER: localhost
   POSTGRES_PORT: 5432
   PYTHONPATH: /home/runner/work/FastAPI-Template/FastAPI-Template
 jobs:
