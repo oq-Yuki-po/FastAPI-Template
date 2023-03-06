@@ -8,7 +8,7 @@
 	"features": {
 		"ghcr.io/devcontainers-contrib/features/isort:2": {},
 		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
-		"ghcr.io/devcontainers-contrib/features/pylint:2": {},
+		"ghcr.io/devcontainers-contrib/features/pylint:2": {}
 	},
 	"customizations": {
 		"vscode": {
@@ -41,6 +41,7 @@
 				"python.autoComplete.extraPaths": [
 					"/usr/local/lib/python3.11/site-packages"
 				],
+				"isort.path": ["/usr/local/py-utils/bin/isort"],
 				"isort.args": [
 					"--line-width",
 					"120",
@@ -59,7 +60,7 @@
 					"--ignore",
 					"E70",
 					"--max-line-length",
-					"120",
+					"120"
 				],
 				"[python]": {
 					"editor.codeActionsOnSave": {
