@@ -3,8 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, DateTime, MetaData, create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import declarative_base, declared_attr, scoped_session, sessionmaker
 from sqlalchemy_utils import create_database, database_exists
 
 from app import app_logger
@@ -18,9 +17,7 @@ DB = os.getenv('POSTGRES_DB')
 PORT = os.getenv('POSTGRES_PORT')
 
 Engine = create_engine(
-    "postgresql://{}:{}@{}:{}/{}".format(USER, PASSWORD, SERVER, PORT, DB),
-    encoding="utf-8",
-    echo=False
+    f"postgresql://{USER}:{PASSWORD}@{SERVER}:{PORT}/{DB}"
 )
 
 # Session
@@ -67,6 +64,7 @@ BaseModel = declarative_base(cls=Base, metadata=metadata)
 
 def initialize_db() -> None:
     try:
+        print(Engine.url)
         if not database_exists(Engine.url):
             app_logger.info('Create Database')
             create_database(Engine.url)
