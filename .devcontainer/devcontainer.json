@@ -100,7 +100,8 @@
 			"mtxr.sqltools",
 			"mtxr.sqltools-driver-pg",
 			"ms-vsliveshare.vsliveshare",
-			"GitHub.copilot"
+			"GitHub.copilot",
+			"gencay.vscode-chatgpt"
 		]
 	},
 	"remoteUser": "vscode"
