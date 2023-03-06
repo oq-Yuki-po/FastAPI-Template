@@ -17,7 +17,7 @@ initialize_db()
                                                             f'<br>{ErrorMessage.DATABASE_ERROR}',
                                                             'model': Root500ErrorClass}
                     })
-async def root(message: str) -> RootOut:
+async def root_get(message: str) -> RootOut:
     return RootOut(message=message)
 
 
@@ -29,5 +29,5 @@ async def root(message: str) -> RootOut:
                                                              f'<br>{ErrorMessage.DATABASE_ERROR}',
                                                              'model': Root500ErrorClass}
                      })
-async def root(rout_in: RootIn) -> RootOut:
+async def root_post(rout_in: RootIn) -> RootOut:
     return RootOut(message=rout_in.message)

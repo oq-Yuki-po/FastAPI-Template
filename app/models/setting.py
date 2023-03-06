@@ -43,11 +43,11 @@ class Base(object):
     __table_args__ = {'schema': os.environ.get('DB_SCHEMA', None)}
 
     @declared_attr
-    def created_at(cls):
+    def created_at(self):
         return Column(DateTime, default=datetime.now, nullable=False)
 
     @declared_attr
-    def updated_at(cls):
+    def updated_at(self):
         return Column(DateTime, default=datetime.now, nullable=False)
 
 
@@ -68,19 +68,19 @@ def initialize_db() -> None:
         if not database_exists(Engine.url):
             app_logger.info('Create Database')
             create_database(Engine.url)
-    except SQLAlchemyError as e:
-        app_logger.error(e)
-        raise DataBaseConnectionError()
-    except Exception as e:
-        app_logger.error(e)
-        raise InternalServerError()
+    except SQLAlchemyError as exception:
+        app_logger.error(exception)
+        raise DataBaseConnectionError() from exception
+    except Exception as exception:
+        app_logger.error(exception)
+        raise InternalServerError() from exception
 
 def initialize_table() -> None:
     try:
         BaseModel.metadata.create_all(Engine)
-    except SQLAlchemyError as e:
-        app_logger.error(e)
-        raise DataBaseConnectionError()
-    except Exception as e:
-        app_logger.error(e)
-        raise InternalServerError()
+    except SQLAlchemyError as exception:
+        app_logger.error(exception)
+        raise DataBaseConnectionError() from exception
+    except Exception as exception:
+        app_logger.error(exception)
+        raise InternalServerError() from exception
