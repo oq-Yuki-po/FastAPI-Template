@@ -17,16 +17,13 @@ DB = os.getenv('POSTGRES_DB')
 PORT = os.getenv('POSTGRES_PORT')
 
 Engine = create_engine(
-    f"postgresql://{USER}:{PASSWORD}@{SERVER}:{PORT}/{DB}"
+    f"postgresql://{USER}:{PASSWORD}@{SERVER}:{PORT}/{DB}",
+    echo=False
 )
 
 # Session
-session = scoped_session(
-    sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=Engine
-    )
+Session = scoped_session(
+    sessionmaker(Engine)
 )
 
 
@@ -51,13 +48,15 @@ class Base(object):
         return Column(DateTime, default=datetime.now, nullable=False)
 
 
+schema_name: str = os.environ.get('DB_SCHEMA', 'test')
+
 metadata = MetaData(naming_convention={
     'pk': 'pk_%(table_name)s',
     'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
     'ix': 'ix_%(table_name)s_%(column_0_name)s',
     'uq': 'uq_%(table_name)s_%(column_0_name)s',
     'ck': 'ck_%(table_name)s_%(constraint_name)s',
-})
+}, schema=schema_name)
 
 BaseModel = declarative_base(cls=Base, metadata=metadata)
 
@@ -74,6 +73,7 @@ def initialize_db() -> None:
     except Exception as exception:
         app_logger.error(exception)
         raise InternalServerError() from exception
+
 
 def initialize_table() -> None:
     try:

@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from app.models import AuthorModel
 from app.models.factories import AuthorFactory
 
@@ -10,10 +12,8 @@ class TestAuthorModel:
 
         author = AuthorModel(name=expected_name)
         registered_id = author.register()
-        db_session.commit()
-
-        registered_author = db_session.query(AuthorModel).\
-            filter(AuthorModel.id == author.id).\
+        registered_author = db_session.scalars(select(AuthorModel).
+                                               filter(AuthorModel.id == author.id)).\
             one()
 
         assert registered_author is not None
