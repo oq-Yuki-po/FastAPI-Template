@@ -22,7 +22,7 @@ Engine = create_engine(
 )
 
 # Session
-Session = scoped_session(
+session = scoped_session(
     sessionmaker(Engine)
 )
 

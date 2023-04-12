@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from sqlalchemy import Column, Integer, String, select
 
-from app.models.setting import BaseModel, Engine, Session
+from app.models.setting import BaseModel, Engine, session
 
 
 class AuthorModel(BaseModel):
@@ -35,10 +35,9 @@ class AuthorModel(BaseModel):
         """
 
         if (author := self.fetch_by_name(self.name)) is None:
-            with Session() as session:
-                session.add(self)
-                session.commit()
-                return self.id
+            session.add(self)
+            session.flush()
+            return self.id
         else:
             return author.id
 
@@ -56,12 +55,11 @@ class AuthorModel(BaseModel):
         Optional[AuthorModel|None]
         """
 
-        with Session() as session:
-            fetch_result = session.scalars(select(cls).
-                                           filter(cls.name == name)).\
-                one_or_none()
+        fetch_result = session.scalars(select(cls).
+                                       filter(cls.name == name)).\
+            one_or_none()
 
-            return fetch_result
+        return fetch_result
 
     @classmethod
     def fetch_all(cls) -> Optional[List[AuthorModel]]:
@@ -71,9 +69,7 @@ class AuthorModel(BaseModel):
         -------
         Optional[List[AuthorModel]|None]
         """
-        with Session() as session:
-            fetch_result = session.execute(select(cls)).\
-                all()
+        fetch_result = session.execute(select(cls)).all()
 
         return fetch_result
 

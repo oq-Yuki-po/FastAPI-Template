@@ -4,7 +4,7 @@ from typing import Optional
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.models import AuthorModel
+from app.models import AuthorModel, session
 from app.models.setting import BaseModel, Engine
 
 
@@ -34,6 +34,7 @@ class BookModel(BaseModel):
         self.author_id = author_id
         self.created_at = created_at
         self.updated_at = updated_at
+
 
 
 if __name__ == "__main__":

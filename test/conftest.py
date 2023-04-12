@@ -8,13 +8,12 @@ from sqlalchemy_utils import database_exists
 from sqlalchemy_utils.functions.database import create_database
 
 from app.main import app
-from app.models import BaseModel, Engine, Session
+from app.models import BaseModel, Engine, session
 
 
 def remove_session() -> None:
 
-    with Session() as session:
-        session.close()
+    session.close()
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -77,5 +76,4 @@ def app_client():
 def db_session(request):
 
     request.addfinalizer(remove_session)
-    with Session() as session:
-        return session
+    return session

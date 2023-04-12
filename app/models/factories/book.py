@@ -5,7 +5,7 @@ from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
 from sqlalchemy import func
 
-from app.models import BookModel, Engine, Session
+from app.models import BookModel, session
 from app.models.factories.author import AuthorFactory
 
 
@@ -13,7 +13,7 @@ class BookFactory(SQLAlchemyModelFactory):
     class Meta:
 
         model = BookModel
-        sqlalchemy_session = Session()
+        sqlalchemy_session = session
 
     title = Sequence(lambda n: f'book_title_{n}')
     isbn = Sequence(lambda n: str(random.randrange(10**12, 10**13)))
