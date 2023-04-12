@@ -23,6 +23,9 @@ pytest = "^6.2.4"
 isort = "^5.9.3"
 autopep8 = "^1.5.7"
 pytest-mock = "^3.6.1"
+bandit = "^1.7.5"
+pre-commit = "^3.2.2"
+pylint = "^2.17.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
