@@ -25,6 +25,9 @@ class AuthorModel(BaseModel):
         self.created_at = created_at
         self.updated_at = updated_at
 
+    def __repr__(self) -> str:
+        return f"<AuthorModel(name={self.name})>"
+
     def register(self) -> int:
         """登録処理
 

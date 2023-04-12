@@ -35,6 +35,9 @@ class BookModel(BaseModel):
         self.created_at = created_at
         self.updated_at = updated_at
 
+    def __repr__(self) -> str:
+        return f"<BookModel(title={self.title}, isbn={self.isbn},"\
+            f"cover_path={self.cover_path}, author_id={self.author_id})>"
 
 
 if __name__ == "__main__":
