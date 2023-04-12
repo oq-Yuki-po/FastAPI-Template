@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.models import AuthorModel, session
-from app.models.setting import BaseModel, Engine
+from app.models import AuthorModel, BaseModel, Engine
 
 
 class BookModel(BaseModel):
@@ -25,7 +26,8 @@ class BookModel(BaseModel):
                  title: str,
                  isbn: str,
                  cover_path: str,
-                 author_id: str,
+                 author_id: Optional[int] = None,
+                 author: Optional[AuthorModel] = None,
                  created_at: Optional[datetime] = None,
                  updated_at: Optional[datetime] = None) -> None:
         self.title = title
@@ -34,6 +36,10 @@ class BookModel(BaseModel):
         self.author_id = author_id
         self.created_at = created_at
         self.updated_at = updated_at
+        if author is not None:
+            self.authors = author
+        if author_id is not None:
+            self.author_id = author_id
 
     def __repr__(self) -> str:
         return f"<BookModel(title={self.title}, isbn={self.isbn},"\
