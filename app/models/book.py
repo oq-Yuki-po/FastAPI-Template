@@ -3,10 +3,12 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, select
 from sqlalchemy.orm import relationship
 
-from app.models import AuthorModel, BaseModel, Engine
+from app import app_logger
+from app.errors.exceptions import BookAlreadyExistsError
+from app.models import AuthorModel, BaseModel, Engine, session
 
 
 class BookModel(BaseModel):
@@ -44,6 +46,44 @@ class BookModel(BaseModel):
     def __repr__(self) -> str:
         return f"<BookModel(title={self.title}, isbn={self.isbn},"\
             f"cover_path={self.cover_path}, author_id={self.author_id})>"
+
+    def save(self) -> None:
+        """
+        save book
+
+        Returns
+        -------
+        book_id
+
+        Raises
+        ------
+        BookAlreadyExistsError
+        """
+
+        if self.fetch_by_isbn(self.isbn) is None:
+            session.add(self)
+            session.flush()
+            return self.id
+        else:
+            app_logger.error("Book title: %s isbn: %s already exists", self.title, self.isbn)
+            raise BookAlreadyExistsError
+
+    @classmethod
+    def fetch_by_isbn(cls, isbn) -> Optional[BookModel]:
+        """
+        fetch book by isbn
+        if book not exists, return None
+
+        Returns
+        -------
+        Optional[BookModel|None]
+        """
+
+        fetch_result = session.scalars(select(cls).
+                                       filter(cls.isbn == isbn)).\
+            one_or_none()
+
+        return fetch_result
 
 
 if __name__ == "__main__":

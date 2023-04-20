@@ -1,13 +1,13 @@
 import os
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, MetaData, create_engine
+from sqlalchemy import Column, DateTime, MetaData, create_engine, inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, declared_attr, scoped_session, sessionmaker
 from sqlalchemy_utils import create_database, database_exists
 
 from app import app_logger
-from app.responses.error import DataBaseConnectionError, InternalServerError
+from app.errors.exceptions import DataBaseConnectionError, InternalServerError
 
 # Engine
 SERVER = os.getenv('POSTGRES_SERVER')
@@ -23,7 +23,7 @@ Engine = create_engine(
 
 # Session
 session = scoped_session(
-    sessionmaker(Engine)
+    sessionmaker(Engine, autoflush=False, autocommit=False)
 )
 
 
@@ -48,7 +48,7 @@ class Base(object):
         return Column(DateTime, default=datetime.now, nullable=False)
 
 
-schema_name: str = os.environ.get('DB_SCHEMA', 'test')
+schema_name: str = os.environ.get('DB_SCHEMA', 'public')
 
 metadata = MetaData(naming_convention={
     'pk': 'pk_%(table_name)s',
@@ -63,7 +63,6 @@ BaseModel = declarative_base(cls=Base, metadata=metadata)
 
 def initialize_db() -> None:
     try:
-        print(Engine.url)
         if not database_exists(Engine.url):
             app_logger.info('Create Database')
             create_database(Engine.url)
@@ -77,7 +76,13 @@ def initialize_db() -> None:
 
 def initialize_table() -> None:
     try:
-        BaseModel.metadata.create_all(Engine)
+        with Engine.connect() as conn:
+            inspector = inspect(conn)
+            if 'books' in inspector.get_table_names():
+                app_logger.info("Table exists")
+            else:
+                app_logger.info('Create Table')
+                BaseModel.metadata.create_all(Engine)
     except SQLAlchemyError as exception:
         app_logger.error(exception)
         raise DataBaseConnectionError() from exception

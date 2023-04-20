@@ -1,33 +1,24 @@
-from fastapi import FastAPI, status
+import uvicorn
+from fastapi import FastAPI
 
-from app.models.setting import initialize_db
-from app.responses import ErrorMessage, Root500ErrorClass, RootOut
-from app.routers import RootIn
+from app.middleware.exception_middleware import ExceptionMiddleware
+from app.models.setting import initialize_db, initialize_table
+from app.routers import book_router
 
 app = FastAPI(title="FastAPI Template", version="1.0.0")
 
-initialize_db()
 
+app.include_router(book_router)
+app.add_middleware(ExceptionMiddleware)
 
-@app.get("/",
-         tags=['root'],
-         response_model=RootOut,
-         responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {'description': f'{ErrorMessage.INTERNAL_SERVER_ERROR}'
-                                                            f'<br>{ErrorMessage.DATABASE_CONNECTION_ERROR}'
-                                                            f'<br>{ErrorMessage.DATABASE_ERROR}',
-                                                            'model': Root500ErrorClass}
-                    })
-async def root_get(message: str) -> RootOut:
-    return RootOut(message=message)
+@app.on_event("startup")
+async def startup_event():
+    initialize_db()
+    initialize_table()
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    pass
 
-@app.post("/",
-          tags=['root'],
-          response_model=RootOut,
-          responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {'description': f'{ErrorMessage.INTERNAL_SERVER_ERROR}'
-                                                             f'<br>{ErrorMessage.DATABASE_CONNECTION_ERROR}'
-                                                             f'<br>{ErrorMessage.DATABASE_ERROR}',
-                                                             'model': Root500ErrorClass}
-                     })
-async def root_post(rout_in: RootIn) -> RootOut:
-    return RootOut(message=rout_in.message)
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # for debug

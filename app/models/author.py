@@ -59,7 +59,7 @@ class AuthorModel(BaseModel):
         """
 
         fetch_result = session.scalars(select(cls).
-                                       filter(cls.name == name)).\
+                                       where(cls.name == name)).\
             one_or_none()
 
         return fetch_result
