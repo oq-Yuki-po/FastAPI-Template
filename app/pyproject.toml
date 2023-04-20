@@ -17,6 +17,7 @@ requests = "^2.26.0"
 cryptography = "^3.4.8"
 fastapi-versioning = "^0.10.0"
 SQLAlchemy-Utils = "^0.40.0"
+pillow = "^9.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
