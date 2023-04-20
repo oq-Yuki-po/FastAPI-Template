@@ -32,3 +32,13 @@ class Root500ErrorClass(BaseModel):
 class BookAlreadyExistsErrorOut(BaseModel):
 
     message: str = ErrorMessage.BOOK_ALREADY_EXISTS
+
+
+class BookNotFoundErrorOut(BaseModel):
+
+    message: str = ErrorMessage.BOOK_NOT_FOUND
+
+
+class ExternalApiErrorOut(BaseModel):
+
+    message: str = ErrorMessage.EXTERNAL_API_ERROR

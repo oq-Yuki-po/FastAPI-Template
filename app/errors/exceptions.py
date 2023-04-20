@@ -47,3 +47,15 @@ class BookAlreadyExistsError(AppError):
     stacktrace: str = traceback.format_exc()
     status_code: int = status.HTTP_409_CONFLICT
     message: str = ErrorMessage.BOOK_ALREADY_EXISTS
+
+class BookNotFoundError(AppError):
+
+    stacktrace: str = traceback.format_exc()
+    status_code: int = status.HTTP_404_NOT_FOUND
+    message: str = ErrorMessage.BOOK_NOT_FOUND
+
+class ExternalApiError(AppError):
+
+    stacktrace: str = traceback.format_exc()
+    status_code: int = status.HTTP_503_SERVICE_UNAVAILABLE
+    message: str = ErrorMessage.EXTERNAL_API_ERROR

@@ -19,7 +19,6 @@ class ExceptionMiddleware:
             response = exc.to_response()
             await response(scope, receive, send)
         except CustomException as exc:
-            app_logger.error(exc.__class__.__name__)
             app_logger.error(exc.message)
             response = JSONResponse(status_code=exc.status_code,
                                     content={"message": exc.message})
