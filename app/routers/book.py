@@ -94,7 +94,7 @@ async def create_book_openbd(isbn: str) -> BookSaveOut:
     """
     try:
         book_info = BookInfoFetcher(isbn).get_book_info()
-        cover_path = book_info.save_image()
+        cover_path = book_info.save_image(directory_path="app/static/images")
 
         author = AuthorModel(name=book_info.author)
         author_id = author.register()
