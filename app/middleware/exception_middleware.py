@@ -30,8 +30,8 @@ class ExceptionMiddleware:
                                     content={"message": ErrorMessage.INTERNAL_SERVER_ERROR})
             await response(scope, receive, send)
         except OSError as exc:
-            app_logger.error(str(exc))
             app_logger.error(exc.__class__.__name__)
+            app_logger.error(str(exc))
             response = JSONResponse(status_code=500,
                                     content={"message": ErrorMessage.INTERNAL_SERVER_ERROR})
             await response(scope, receive, send)
