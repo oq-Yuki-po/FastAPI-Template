@@ -2,7 +2,6 @@ import os
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import text
 from sqlalchemy.sql.ddl import CreateSchema, DropSchema
 from sqlalchemy_utils import database_exists
 from sqlalchemy_utils.functions.database import create_database
