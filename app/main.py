@@ -11,10 +11,12 @@ app = FastAPI(title="FastAPI Template", version="1.0.0")
 app.include_router(book_router)
 app.add_middleware(ExceptionMiddleware)
 
+
 @app.on_event("startup")
 async def startup_event():
     initialize_db()
     initialize_table()
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
