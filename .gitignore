@@ -129,8 +129,5 @@ dmypy.json
 .pyre/
 .devcontainer/schemaspy/output
 
-# VSCode
-.vscode/
-
 # app
 app/static/images/*.jpg
