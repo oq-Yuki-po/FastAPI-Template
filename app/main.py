@@ -18,9 +18,5 @@ async def startup_event():
     initialize_table()
 
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    pass
-
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=8000)  # for debug
