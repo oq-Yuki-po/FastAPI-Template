@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Query
 
 from app.api.book_info_fetcher import BookInfoFetcher
 from app.errors.custom_exception import CustomException
@@ -6,7 +8,7 @@ from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, Ext
 from app.errors.responses import BookAlreadyExistsErrorOut, BookNotFoundErrorOut, ExternalApiErrorOut, Root500ErrorClass
 from app.models import AuthorModel, BookModel, session
 from app.schemas.requests import BookSaveIn
-from app.schemas.responses import BookSaveOut
+from app.schemas.responses import BookGetAllOut, BookGetOut, BookSaveOut
 
 router = APIRouter(
     prefix="/books",
@@ -26,6 +28,7 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     """
     create_book is a function that creates a book.
 
+    ```
     Parameters
     ----------
     book_in : BookSaveIn
@@ -40,6 +43,7 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     ------
     BookAlreadyExistsError
         If the book already exists in the database
+    ```
     """
     try:
 
@@ -67,10 +71,14 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
                  503: {"model": ExternalApiErrorOut,
                        "description": "External API Error"}
              })
-async def create_book_openbd(isbn: str) -> BookSaveOut:
+async def create_book_openbd(isbn: Annotated[str,
+                                             Query(title="ISBN code",
+                                                   min_length=13,
+                                                   max_length=13)]) -> BookSaveOut:
     """
     create_book_openbd is a function that creates a book using OpenBD API.
 
+    ```
     Parameters
     ----------
     isbn : str
@@ -91,10 +99,12 @@ async def create_book_openbd(isbn: str) -> BookSaveOut:
         If the OpenBD API returns an error response
         Or if the OpenBD API is not available
         Or if the OpenBD API returns an unexpected response
+    ```
     """
     try:
         book_info = BookInfoFetcher(isbn).get_book_info()
-        cover_path = book_info.save_image(directory_path="app/static/images")
+
+        cover_path = book_info.save_image(directory_path="static/images")
 
         author = AuthorModel(name=book_info.author)
         author_id = author.register()
@@ -116,3 +126,30 @@ async def create_book_openbd(isbn: str) -> BookSaveOut:
     except ExternalApiError as error:
         session.rollback()
         raise CustomException(message=error.message, status_code=error.status_code) from error
+
+
+@router.get("/",
+            response_model=BookGetAllOut,
+            responses={
+                500: {"model": Root500ErrorClass,
+                      "description": "Internal Server Error"}
+            })
+async def get_all_books(offset: int = Query(default=0, ge=0),
+                        limit: int = Query(default=25, le=100)) -> BookGetAllOut:
+    """
+    get_all_books is a function that gets all books.
+
+    ```
+    Returns
+    -------
+    BookGetAllOut
+        BookGetAllOut object
+    ```
+    """
+    books = BookModel.fetch_all(offset=offset, limit=limit)
+
+    return BookGetAllOut(books=[BookGetOut(id=i.id,
+                                           title=i.title,
+                                           author_name=i.author_name,
+                                           isbn=i.isbn,
+                                           ) for i in books])

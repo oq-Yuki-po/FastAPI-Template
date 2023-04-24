@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Column, ForeignKey, Integer, String, select
+from sqlalchemy.engine.row import Row
 from sqlalchemy.orm import relationship
 
 from app import app_logger
@@ -83,6 +84,35 @@ class BookModel(BaseModel):
                                        filter(cls.isbn == isbn)).\
             one_or_none()
 
+        return fetch_result
+
+    @classmethod
+    def fetch_all(cls, offset: int, limit: int) -> list[Row]:
+        """
+        fetch all books
+
+        Returns
+        -------
+        list[Row]
+            BookModel.id, BookModel.title, BookModel.isbn, AuthorModel.name AS author_name
+        """
+        stmt = select(cls.id,
+                      cls.title,
+                      cls.isbn,
+                      AuthorModel.name.label("author_name")).join(cls.authors).\
+            order_by(cls.id).\
+            limit(limit).\
+            offset(offset)
+        """SQL
+            SELECT public.books.id,
+                public.books.title,
+                public.books.isbn,
+                public.authors.name AS author_name FROM public.books
+                JOIN public.authors ON public.authors.id = public.books.author_id
+            ORDER BY public.books.id
+            LIMIT :param_1 OFFSET :param_2
+        """
+        fetch_result = session.execute(stmt).all()
         return fetch_result
 
 
