@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError
+from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, ExternalApiError
 from app.models import AuthorModel, BookModel
 from app.models.factories import BookFactory
 from app.schemas.requests import BookSaveIn
@@ -101,3 +101,49 @@ def test_create_book_openbd_invalid_data(app_client: TestClient, mocker) -> None
     response = app_client.post("/books/openbd?isbn=9784798157578")
     assert response.status_code == BookNotFoundError.status_code
     assert response.json() == {"message": BookNotFoundError.message}
+
+
+def test_create_book_openbd_book_already_exists(app_client: TestClient, mocker, db_session: Session) -> None:
+    """
+    Test create_book with book already exists
+    """
+
+    test_title = "スタートライン : 一歩踏み出せば奇跡は起こる"
+    test_author = "喜多川泰／著"
+    test_isbn = "9784799311783"
+    test_cover = "https://cover.openbd.jp/9784799311783.jpg"
+
+    mock_obj = mocker.Mock()
+    mock_obj.json.return_value = [
+        {
+            "summary": {
+                "title": test_title,
+                "author": test_author,
+                "isbn": test_isbn,
+                "cover": test_cover
+            }
+        }
+    ]
+    mocker.patch("app.api.book_info_fetcher.requests.get", return_value=mock_obj)
+    mocker.patch("app.api.book_info_fetcher.BookInfo.save_image", return_value=f"test/path/{test_isbn}.jpg")
+
+    book = BookFactory(isbn=test_isbn)
+    db_session.add(book)
+    db_session.commit()
+
+    response = app_client.post(f"/books/openbd?isbn={test_isbn}")
+
+    assert response.status_code == BookAlreadyExistsError.status_code
+    assert response.json() == {"message": BookAlreadyExistsError.message}
+
+
+def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -> None:
+    """
+    Test create_book with external api error
+    """
+
+    mocker.patch("app.api.book_info_fetcher.BookInfoFetcher.fetch", side_effect=ExternalApiError)
+
+    response = app_client.post("/books/openbd?isbn=9784798157578")
+    assert response.status_code == ExternalApiError.status_code
+    assert response.json() == {"message": ExternalApiError.message}
