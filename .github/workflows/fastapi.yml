@@ -4,7 +4,8 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
-
+env:
+  PYTHONPATH: /home/runner/work/FastAPI-Template/FastAPI-Template
 jobs:
   build:
     runs-on: ubuntu-latest
