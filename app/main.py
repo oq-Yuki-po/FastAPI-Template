@@ -15,3 +15,6 @@ app.add_middleware(ExceptionMiddleware)
 async def startup_event():
     initialize_db()
     initialize_table()
+
+def print_spec() -> None:
+    print(app.openapi())
