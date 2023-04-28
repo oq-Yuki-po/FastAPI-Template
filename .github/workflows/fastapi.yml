@@ -39,17 +39,17 @@ jobs:
         run: |
           npm install -g redoc-cli
           redoc-cli bundle openapi_spec.json
-	  mkdir pages
+	        mkdir pages
           mv redoc-static.html pages/my_doc.html
 
       # 以降は同じ
-      - uses: actions/upload-artifact@v3
-        with:
-          name: fastapi_doc
-          path: pages
-      - uses: actions/upload-pages-artifact@v1
-        with:
-          path: pages
+        - uses: actions/upload-artifact@v3
+          with:
+            name: fastapi_doc
+            path: pages
+        - uses: actions/upload-pages-artifact@v1
+          with:
+            path: pages
 
   deploy:
     needs: build
