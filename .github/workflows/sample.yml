@@ -53,3 +53,37 @@ jobs:
       - name: Test with pytest
         run: |
           pytest -v
+      - name: Build OpenAPI spec
+        run: |
+          python -c "from app.main import print_spec; print_spec()" > openapi_spec.json
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Build ReDoc HTML
+        run: |
+          npm install -g redoc-cli
+          redoc-cli bundle openapi_spec.json
+          mkdir pages
+          mv redoc-static.html pages/my_doc.html
+      - uses: actions/upload-artifact@v3
+        with:
+          name: fastapi_doc
+          path: pages
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: pages
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/deploy-pages@v1
+        id: deployment
