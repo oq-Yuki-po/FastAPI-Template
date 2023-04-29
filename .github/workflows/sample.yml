@@ -17,6 +17,7 @@ jobs:
       matrix:
         python-version: [3.11]
     steps:
+      - uses: actions/checkout@v2
       - name: setup
         uses: ./.github/workflows/setup.yml
         with:
