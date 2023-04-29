@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: change permission
         run: |
-          chmod -R 777  +x ${{ github.workspace }}/.devcontainer
+          chmod -R 777 ${{ github.workspace }}/.devcontainer
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
