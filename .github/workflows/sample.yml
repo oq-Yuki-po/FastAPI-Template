@@ -72,12 +72,18 @@ jobs:
           cp openapi.yml pages/swagger-ui/openapi.yml
           cp docs/swagger-ui.html pages/swagger-ui/index.html
           cp docs/index.html pages/index.html
-      - name: run schemaspy
+      - name: build schemaspy
         run: |
           docker run --name schemaspy -d schemaspy/schemaspy:snapshot /bin/bash -c 'while true; do echo HELLO; sleep 5; done'
           docker ps -a
           docker cp ./.devcontainer/schemaspy/make.sh schemaspy:/make.sh
           docker cp ./.devcontainer/schemaspy/postgresql-42.4.0.jar schemaspy:/postgresql-42.4.0.jar
+          docekr stop schemaspy
+      - name: run schemaspy
+        run: |
+          mkdir pages/schemaspy
+          docker run --name schemaspy -d schemaspy/schemaspy:snapshot /bin/bash -c 'sh /make.sh'
+          docker cp schemaspy:/output/. pages/schemaspy
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
