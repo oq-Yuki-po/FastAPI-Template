@@ -1,9 +1,9 @@
 /usr/local/bin/schemaspy \
--u postgres \
--host localhost \
--port 5432 \
--db postgres \
--p postgres \
+-u ${POSTGRES_USER} \
+-host ${POSTGRES_SERVER} \
+-port ${POSTGRES_PORT} \
+-db ${POSTGRES_DB} \
+-p ${POSTGRES_PASSWORD} \
 -s public \
 -t pgsql11 \
 -connprops useSSL\\\\=false
