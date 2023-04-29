@@ -94,7 +94,7 @@ jobs:
                                   -t pgsql11 \
                                   -o pages/schemaspy \
                                   -debug \
-                                  -loadjars .devcontainer/schemaspy/postgresql-42.4.0.jar \
+                                  -dp .devcontainer/schemaspy/postgresql-42.4.0.jar \
                                   -connprops useSSL\\\\=false
       - uses: actions/upload-artifact@v3
         with:
