@@ -1,11 +1,86 @@
+<!DOCTYPE html>
 <html>
-
 <head>
+    <meta charset="UTF-8">
+    <title>GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-top: 50px;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        li {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 20px;
+            width: 400px;
+            height: 200px;
+        }
+        li:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        a:link,
+        a:visited,
+        a:hover,
+        a:active {
+            color: #333;
+            text-decoration: none;
+        }
+        .icon-container {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 100%;
+        }
+        .icon-container svg {
+            height: 100%;
+            width: auto;
+            position: absolute;
+            top: 0;
+            right: -50px;
+            z-index: -1;
+        }
+
+    </style>
 </head>
 
 <body>
-    Github Pages
-    <a href="./swagger-ui">Swagger UI</a>
+    <h1>公開しているページ一覧</h1>
+    <ul>
+        <li>
+            <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#4caf50" fill-opacity="1" d="M0,128L40,160C80,192,160,256,240,256C320,256,400,192,480,176C560,160,640,192,720,176C800,160,880,96,960,101.3C1040,107,1120,181,1200,197.3C1280,213,1360,171,1400,149.3L1440,128L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
+                <a href="https://oq-yuki-po.github.io/FastAPI-Template/"><h2>Top</h2></a>
+            </div>
+        </li>
+        <li>
+            <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#1976d2" fill-opacity="1" d="M0,128L40,160C80,192,160,256,240,256C320,256,400,192,480,176C560,160,640,192,720,176C800,160,880,96,960,101.3C1040,107,1120,181,1200,197.3C1280,213,1360,171,1400,149.3L1440,128L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
+                <a href="https://oq-yuki-po.github.io/FastAPI-Template/swagger-ui/"><h2>Swagger UI</h2></a>
+            </div>
+        </li>
+    </ul>
 </body>
-
 </html>
