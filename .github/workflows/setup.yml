@@ -1,53 +1,15 @@
-# python の環境を構築
-
-name: Python application
+name: Reuse Workflow
 
 on:
-    workflow_dispatch:
-      inputs:
-        python-version:
-          required: true
-          type: string
-env:
-  POSTGRES_USER: postgres
-  POSTGRES_DB: postgres
-  POSTGRES_PASSWORD: postgres
-  POSTGRES_SERVER: localhost
-  POSTGRES_PORT: 5432
-  PYTHONPATH: ${{ github.workspace }}
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14-alpine
-        env:
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ inputs.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ inputs.python-version }}
-      - name: Install poetry
-        run: |
-          pip install poetry
-          poetry config virtualenvs.create false
-      - name: Check Poetry Version
-        run: |
-          poetry --version
-      - name: Install poetry Dependencies
-        run: |
-          poetry install --no-interaction -C ./app
-      - name: DB migration
-        run: |
-          alembic upgrade head
+      - name: echo
+        run: echo ${{ inputs.python-version }}
