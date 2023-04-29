@@ -33,9 +33,9 @@ jobs:
       schemaspy:
         image: schemaspy/schemaspy:snapshot
         volumes:
-          - ./.devcontainer/schemaspy/output:/output
-          - ./.devcontainer/schemaspy/postgresql-42.4.0.jar:/postgresql-42.4.0.jar
-          - ./.devcontainer/schemaspy/make.sh:/make.sh
+          - ${{ github.workspace }}/.devcontainer/schemaspy/output:/output
+          - ${{ github.workspace }}/.devcontainer/schemaspy/postgresql-42.4.0.jar:/postgresql-42.4.0.jar
+          - ${{ github.workspace }}/.devcontainer/schemaspy/make.sh:/make.sh
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
