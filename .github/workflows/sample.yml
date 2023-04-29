@@ -30,6 +30,19 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      schemaspy:
+        image: schemaspy/schemaspy:snapshot
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd wget -q -O - http://localhost:8080/ || exit 1
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        volumes:
+          - ./.devcontainer/schemaspy/output:/output
+          - ./.devcontainer/schemaspy/postgresql-42.4.0.jar:/postgresql-42.4.0.jar
+          - ./.devcontainer/schemaspy/make.sh:/make.sh
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -72,6 +85,11 @@ jobs:
           cp openapi.yml pages/swagger-ui/openapi.yml
           cp docs/swagger-ui.html pages/swagger-ui/index.html
           cp docs/index.html pages/index.html
+      - name: run schemaspy
+        run: |
+          docker exec schemaspy sh /make.sh
+          mkdir pages/schemaspy
+          cp -r ./.devcontainer/schemaspy/output/* pages/schemaspy
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
