@@ -1,4 +1,4 @@
-name: SchemaSpy Document Generator
+name: OpenAPI and SchemaSpy Document Generator
 
 on: [push]
 env:
@@ -31,6 +31,25 @@ jobs:
         uses: ./.github/actions/setup
         with:
           python-version: 3.11
+      - name: Build OpenAPI spec
+        run: |
+          python app/main.py
+      - name: Checkout swagger-ui
+        uses: actions/checkout@v3
+        with:
+          repository: swagger-api/swagger-ui
+          ref: v4.15.5
+          path: swagger-ui
+      - name: Inject Swagger static files
+        run: |
+          mkdir pages
+          mkdir pages/swagger-ui
+          cp -r swagger-ui/dist/* pages/swagger-ui
+      - name: Inject OpenAPI spec
+        run: |
+          cp openapi.yaml pages/swagger-ui/openapi.yaml
+          cp docs/swagger-ui.html pages/swagger-ui/index.html
+          cp docs/index.html pages/index.html
       - uses: actions/setup-java@v1
         with:
           java-version: '17-ea' # The JDK version to make available on the path.
