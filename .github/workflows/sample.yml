@@ -92,9 +92,9 @@ jobs:
                                   -p ${POSTGRES_PASSWORD} \
                                   -s public \
                                   -t pgsql11 \
-                                  -connprops useSSL=false \
                                   -o pages/schemaspy \
-                                  -debug
+                                  -debug \
+                                  -connprops useSSL\\\\=false
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
