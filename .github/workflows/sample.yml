@@ -92,8 +92,8 @@ jobs:
                                   -p ${POSTGRES_PASSWORD} \
                                   -s public \
                                   -t pgsql11 \
-                                  -connprops useSSL=false
-                                  -o pages/schemaspy
+                                  -connprops useSSL=false \
+                                  -o pages/schemaspy \
                                   -debug
       - uses: actions/upload-artifact@v3
         with:
