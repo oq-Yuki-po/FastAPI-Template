@@ -5,7 +5,7 @@ name: Python application
 on: [push]
 env:
   POSTGRES_USER: postgres
-  POSTGRES_DB: postgres
+  POSTGRES_DB: sample
   POSTGRES_PASSWORD: postgres
   POSTGRES_SERVER: localhost
   POSTGRES_PORT: 5432
@@ -20,9 +20,9 @@ jobs:
       postgres:
         image: postgres:14-alpine
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
@@ -33,27 +33,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: ./.github/actions/setup
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Use Reuse Action
-        uses: ./.github/actions/sample
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install poetry
-        run: |
-          pip install poetry
-          poetry config virtualenvs.create false
-      - name: Poetry Version
-        run: |
-          poetry --version
-      - name: Poetry Install Dependencies
-        run: |
-          poetry install --no-interaction -C ./app
-      - name: alembic upgrade head
-        run: |
-          alembic upgrade head
-        working-directory: ./app
       - name: Test with pytest
         run: |
           pytest -v
