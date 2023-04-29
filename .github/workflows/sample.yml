@@ -55,7 +55,7 @@ jobs:
           pytest -v
       - name: Build OpenAPI spec
         run: |
-          python -c "from app.main import print_spec; print_spec()" > swager.json
+          python -c "from app.main import export_swagger; export_swagger()" > swager.json
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
