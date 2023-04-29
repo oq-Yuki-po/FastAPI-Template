@@ -85,7 +85,7 @@ jobs:
           docker ps -a
       - name: run schemaspy
         run: |
-          docker run -it schemaspy/schemaspy:snapshot
+          docker run schemaspy/schemaspy:snapshot
           docker cp ./.devcontainer/schemaspy/make.sh schemaspy:/make.sh
           docker cp ./.devcontainer/schemaspy/postgresql-42.4.0.jar schemaspy:/postgresql-42.4.0.jar
           docker exec schemaspy sh /make.sh
