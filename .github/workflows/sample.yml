@@ -72,13 +72,25 @@ jobs:
           cp openapi.yml pages/swagger-ui/openapi.yml
           cp docs/swagger-ui.html pages/swagger-ui/index.html
           cp docs/index.html pages/index.html
-      - name: run schemaspy
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '9.0.4' # The JDK version to make available on the path.
+          java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
+          architecture: x64
+      - name: schemaSpy
         run: |
-          mkdir pages/schemaspy
-          docker run --name schemaspy -d schemaspy/schemaspy:snapshot -v ./.devcontainer/schemaspy:/ -c "sh make.sh" \
-          -e POSTGRES_USER=postgres POSTGRES_DB=postgres POSTGRES_PASSWORD=postgres POSTGRES_SERVER=localhost POSTGRES_PORT=5432
-          docker ps -a
-          docker cp schemaspy:/output/. pages/schemaspy
+          wget https://github.com/schemaspy/schemaspy/releases/download/v6.2.2/schemaspy-6.2.2.jar -O schemaspy.jar
+          cp .devcontainer/schemaspy/postgresql-42.4.0.jar ./
+          java -jar schemaspy.jar -u ${POSTGRES_USER} \
+                                  -host ${POSTGRES_SERVER} \
+                                  -port ${POSTGRES_PORT} \
+                                  -db ${POSTGRES_DB} \
+                                  -p ${POSTGRES_PASSWORD} \
+                                  -s public \
+                                  -t pgsql11 \
+                                  -connprops useSSL\\\\=false
+          mkdir -p pages/schemaspy
+          mv output/* pages/schemaspy/.
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
