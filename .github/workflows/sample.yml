@@ -65,13 +65,12 @@ jobs:
       - name: Inject Swagger static files
         run: |
           mkdir pages
-          cp -r swagger-ui/dist/* pages/
+          mkdir pages/swagger-ui
+          cp -r swagger-ui/dist/* pages/swagger-ui
       - name: Inject OpenAPI spec
         run: |
-          cp openapi.yml pages/openapi.yml
-      - name: copy index.html
-        run: |
-          cp docs/index.html pages/index.html
+          cp openapi.yml pages/swagger-ui/openapi.yml
+          cp docs/index.html pages/swagger-ui/index.html
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
