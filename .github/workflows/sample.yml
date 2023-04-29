@@ -79,6 +79,7 @@ jobs:
           architecture: x64
       - name: schemaSpy
         run: |
+          mkdir pages/schemaspy
           wget https://github.com/schemaspy/schemaspy/releases/download/v6.2.2/schemaspy-6.2.2.jar -O schemaspy.jar
           cp .devcontainer/schemaspy/postgresql-42.4.0.jar ./
           java -version
@@ -92,8 +93,8 @@ jobs:
                                   -s public \
                                   -t pgsql11 \
                                   -connprops useSSL=false
-          mkdir pages/schemaspy
-          mv output/* pages/schemaspy/.
+                                  -o pages/schemaspy
+                                  -debug
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
