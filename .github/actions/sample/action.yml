@@ -1,9 +1,12 @@
+name: "Test Composite Action"
+description: "Test Composite Action"
 inputs:
   python-version:
+    description: "Python version to use"
     required: true
-    type: string
 runs:
   using: "composite"
   steps:
     - name: echo
+      shell: bash
       run: echo ${{ inputs.python-version }}
