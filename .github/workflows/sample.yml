@@ -64,6 +64,8 @@ jobs:
           path: swagger-ui
       - name: Inject Swagger static files
         run: |
+          mkdir pages
+          mkdir pages/swagger-ui
           cp -r swagger-ui/dist/* pages/swagger-ui
       - name: Inject OpenAPI spec
         run: |
