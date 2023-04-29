@@ -86,11 +86,7 @@ jobs:
           docker ps -a
           docker cp ./.devcontainer/schemaspy/make.sh schemaspy:/make.sh
           docker cp ./.devcontainer/schemaspy/postgresql-42.4.0.jar schemaspy:/postgresql-42.4.0.jar
-      - name: make schemaspy
-        run: |
-          docker exec schemaspy env --env-file ./.devcontainer/app.env
           docker exec schemaspy sh /make.sh --env-file ./.devcontainer/app.env
-          mkdir pages/schemaspy
           docker cp schemaspy:/output/. pages/schemaspy
       - uses: actions/upload-artifact@v3
         with:
