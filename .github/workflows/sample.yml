@@ -95,6 +95,7 @@ jobs:
                                   -o pages/schemaspy \
                                   -debug \
                                   -dp .devcontainer/schemaspy/postgresql-42.4.0.jar \
+                                  -vizjs \
                                   -connprops useSSL\\\\=false
       - uses: actions/upload-artifact@v3
         with:
