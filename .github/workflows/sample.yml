@@ -69,7 +69,7 @@ jobs:
           cp -r swagger-ui/dist/* pages/swagger-ui
       - name: Inject OpenAPI spec
         run: |
-          cp openapi.yml pages/swagger-ui/openapi.yml
+          cp openapi.yaml pages/swagger-ui/openapi.yaml
           cp docs/swagger-ui.html pages/swagger-ui/index.html
           cp docs/index.html pages/index.html
       - uses: actions/setup-java@v1
