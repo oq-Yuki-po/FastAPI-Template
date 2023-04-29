@@ -91,8 +91,8 @@ jobs:
       - name: make schemaspy
         run: |
           docker run schemaspy/schemaspy:snapshot
-          docker exec schemaspy env --env-file ./.devcontainer/schemaspy/app.env
-          docker exec schemaspy sh /make.sh --env-file ./.devcontainer/schemaspy/app.env
+          docker exec schemaspy env --env-file ./.devcontainer/app.env
+          docker exec schemaspy sh /make.sh --env-file ./.devcontainer/app.env
           mkdir pages/schemaspy
           docker cp schemaspy:/output/. pages/schemaspy
       - uses: actions/upload-artifact@v3
