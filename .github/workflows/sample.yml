@@ -55,18 +55,28 @@ jobs:
           pytest -v
       - name: Build OpenAPI spec
         run: |
-          python -c "from app.main import print_spec; print_spec()" > openapi_spec.json
+          python -c "from app.main import print_spec; print_spec()" > swager.json
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-
-      - name: Build ReDoc HTML
+      - name: Checkout swagger-ui
+        uses: actions/checkout@v3
+        with:
+          repository: swagger-api/swagger-ui
+          ref: v4.15.5
+          path: swagger-ui
+      - name: Inject Swagger static files
         run: |
-          npm install -g redoc-cli
-          redoc-cli bundle openapi_spec.json
           mkdir pages
-          mv redoc-static.html pages/index.html
+          cp -r swagger-ui/dist/* pages/
+          cp openapi_spec.json pages/swager.json
+      # - name: Build ReDoc HTML
+      #   run: |
+      #     npm install -g redoc-cli
+      #     redoc-cli bundle openapi_spec.json
+      #     mkdir pages
+      #     mv redoc-static.html pages/index.html
       - uses: actions/upload-artifact@v3
         with:
           name: fastapi_doc
