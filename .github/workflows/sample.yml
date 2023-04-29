@@ -36,8 +36,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Use Reuse Workflow
-        uses: ./.github/workflows/setup.yml
+      - name: Use Reuse Action
+        uses: ./.github/actions/setup
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install poetry

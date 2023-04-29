@@ -1,0 +1,9 @@
+inputs:
+  python-version:
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: echo
+      run: echo ${{ inputs.python-version }}
