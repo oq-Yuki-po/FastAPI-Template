@@ -76,11 +76,11 @@ jobs:
         run: |
           docker run --name schemaspy -d schemaspy/schemaspy:snapshot /bin/bash -c 'while true; do echo HELLO; sleep 5; done'
           docker ps -a
-          docker cp ./.devcontainer/schemaspy/make.sh schemaspy:/make.sh
-          docker cp ./.devcontainer/schemaspy/postgresql-42.4.0.jar schemaspy:/postgresql-42.4.0.jar
-          docker exec schemaspy env ./.devcontainer/app.env
-          docker exec schemaspy ls -a ./.devcontainer/app.env
-          docker exec schemaspy sh /make.sh --env-file ./.devcontainer/app.env
+          docker cp ${{ github.workspace }}/.devcontainer/schemaspy/make.sh schemaspy:/make.sh
+          docker cp ${{ github.workspace }}/.devcontainer/schemaspy/postgresql-42.4.0.jar schemaspy:/postgresql-42.4.0.jar
+          docker exec schemaspy env ${{ github.workspace }}/.devcontainer/app.env
+          docker exec schemaspy ls -a ${{ github.workspace }}/.devcontainer/app.env
+          docker exec schemaspy sh /make.sh --env-file ${{ github.workspace }}/.devcontainer/app.env
           docker cp schemaspy:/output/. pages/schemaspy
       - uses: actions/upload-artifact@v3
         with:
