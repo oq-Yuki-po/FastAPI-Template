@@ -1,0 +1,72 @@
+name: OpenAPI Document Generator
+
+on: [push]
+env:
+  POSTGRES_USER: postgres
+  POSTGRES_DB: sample
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_SERVER: localhost
+  POSTGRES_PORT: 5432
+  PYTHONPATH: ${{ github.workspace }}
+jobs:
+  build-openapi:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        uses: ./.github/actions/setup
+        with:
+          python-version: 3.11
+      - name: Build OpenAPI spec
+        run: |
+          python app/main.py
+      - name: Checkout swagger-ui
+        uses: actions/checkout@v3
+        with:
+          repository: swagger-api/swagger-ui
+          ref: v4.15.5
+          path: swagger-ui
+      - name: Inject Swagger static files
+        run: |
+          mkdir pages
+          mkdir pages/swagger-ui
+          cp -r swagger-ui/dist/* pages/swagger-ui
+      - name: Inject OpenAPI spec
+        run: |
+          cp openapi.yaml pages/swagger-ui/openapi.yaml
+          cp docs/swagger-ui.html pages/swagger-ui/index.html
+          cp docs/index.html pages/index.html
+      - uses: actions/upload-artifact@v3
+        with:
+          name: fastapi_doc
+          path: pages
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: pages
+  deploy:
+    needs: build-openapi
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/deploy-pages@v1
+        id: deployment

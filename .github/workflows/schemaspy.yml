@@ -1,6 +1,4 @@
-# python の環境を構築
-
-name: Python application
+name: SchemaSpy Document Generator
 
 on: [push]
 env:
@@ -11,11 +9,8 @@ env:
   POSTGRES_PORT: 5432
   PYTHONPATH: ${{ github.workspace }}
 jobs:
-  build:
+  build-schemaspy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.11]
     services:
       postgres:
         image: postgres:14-alpine
@@ -32,32 +27,10 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.11
         uses: ./.github/actions/setup
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Test with pytest
-        run: |
-          pytest -v
-      - name: Build OpenAPI spec
-        run: |
-          python app/main.py
-      - name: Checkout swagger-ui
-        uses: actions/checkout@v3
-        with:
-          repository: swagger-api/swagger-ui
-          ref: v4.15.5
-          path: swagger-ui
-      - name: Inject Swagger static files
-        run: |
-          mkdir pages
-          mkdir pages/swagger-ui
-          cp -r swagger-ui/dist/* pages/swagger-ui
-      - name: Inject OpenAPI spec
-        run: |
-          cp openapi.yaml pages/swagger-ui/openapi.yaml
-          cp docs/swagger-ui.html pages/swagger-ui/index.html
-          cp docs/index.html pages/index.html
+          python-version: 3.11
       - uses: actions/setup-java@v1
         with:
           java-version: '17-ea' # The JDK version to make available on the path.
@@ -91,7 +64,7 @@ jobs:
         with:
           path: pages
   deploy:
-    needs: build
+    needs: build-schemaspy
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment:
