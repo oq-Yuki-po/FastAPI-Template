@@ -32,13 +32,6 @@ jobs:
           --health-retries 5
       schemaspy:
         image: schemaspy/schemaspy:snapshot
-        ports:
-          - 8080:8080
-        options: >-
-          --health-cmd wget -q -O - http://localhost:8080/ || exit 1
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
         volumes:
           - ./.devcontainer/schemaspy/output:/output
           - ./.devcontainer/schemaspy/postgresql-42.4.0.jar:/postgresql-42.4.0.jar
