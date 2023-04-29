@@ -55,7 +55,7 @@ jobs:
           pytest -v
       - name: Build OpenAPI spec
         run: |
-          python -c "from app.main import export_swagger; export_swagger()" > openapi.yml
+          python app/main.py
       - name: Checkout swagger-ui
         uses: actions/checkout@v3
         with:
