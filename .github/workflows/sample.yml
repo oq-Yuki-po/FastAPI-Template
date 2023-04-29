@@ -70,7 +70,7 @@ jobs:
         run: |
           mkdir pages
           cp -r swagger-ui/dist/* pages/
-          cp openapi_spec.json pages/swager.json
+          cp swager.json pages/swager.json
       # - name: Build ReDoc HTML
       #   run: |
       #     npm install -g redoc-cli
