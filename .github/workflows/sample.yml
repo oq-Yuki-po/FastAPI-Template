@@ -81,6 +81,9 @@ jobs:
         run: |
           wget https://github.com/schemaspy/schemaspy/releases/download/v6.2.2/schemaspy-6.2.2.jar -O schemaspy.jar
           cp .devcontainer/schemaspy/postgresql-42.4.0.jar ./
+          java -version
+          ls -l
+          env
           java -jar schemaspy.jar -u ${POSTGRES_USER} \
                                   -host ${POSTGRES_SERVER} \
                                   -port ${POSTGRES_PORT} \
@@ -88,8 +91,8 @@ jobs:
                                   -p ${POSTGRES_PASSWORD} \
                                   -s public \
                                   -t pgsql11 \
-                                  -connprops useSSL\\\\=false
-          mkdir -p pages/schemaspy
+                                  -connprops useSSL=false
+          mkdir pages/schemaspy
           mv output/* pages/schemaspy/.
       - uses: actions/upload-artifact@v3
         with:

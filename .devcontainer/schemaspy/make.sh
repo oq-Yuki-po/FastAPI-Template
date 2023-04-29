@@ -6,4 +6,4 @@
 -p ${POSTGRES_PASSWORD} \
 -s public \
 -t pgsql11 \
--connprops useSSL\\\\=false
+-connprops useSSL=false
