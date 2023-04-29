@@ -74,7 +74,7 @@ jobs:
           cp docs/index.html pages/index.html
       - uses: actions/setup-java@v1
         with:
-          java-version: '9.0.4' # The JDK version to make available on the path.
+          java-version: '17-ea' # The JDK version to make available on the path.
           java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
           architecture: x64
       - name: schemaSpy
