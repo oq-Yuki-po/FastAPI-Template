@@ -75,7 +75,8 @@ jobs:
       - name: run schemaspy
         run: |
           mkdir pages/schemaspy
-          docker run --name schemaspy -d schemaspy/schemaspy:snapshot -c "sh make.sh" -v ./.devcontainer/schemaspy:/
+          docker run --name schemaspy -d schemaspy/schemaspy:snapshot -v ./.devcontainer/schemaspy:/ -c "sh make.sh" \
+          -e POSTGRES_USER=postgres POSTGRES_DB=postgres POSTGRES_PASSWORD=postgres POSTGRES_SERVER=localhost POSTGRES_PORT=5432
           docker ps -a
           docker cp schemaspy:/output/. pages/schemaspy
       - uses: actions/upload-artifact@v3
