@@ -74,11 +74,11 @@ jobs:
           cp docs/index.html pages/index.html
       - name: run schemaspy
         run: |
-          docker run --name schemaspy -d schemaspy/schemaspy:snapshot /bin/bash -c 'while true; do echo HELLO; sleep 5; done' --env-file ./.devcontainer/app.env
+          docker run --name schemaspy -d schemaspy/schemaspy:snapshot /bin/bash -c 'while true; do echo HELLO; sleep 5; done'
           docker ps -a
           docker cp ./.devcontainer/schemaspy/make.sh schemaspy:/make.sh
           docker cp ./.devcontainer/schemaspy/postgresql-42.4.0.jar schemaspy:/postgresql-42.4.0.jar
-          docker exec schemaspy sh /make.sh --env-file ./.devcontainer/app.env
+          docker exec schemaspy sh /make.sh
           docker cp schemaspy:/output/. pages/schemaspy
       - uses: actions/upload-artifact@v3
         with:
