@@ -37,6 +37,9 @@ jobs:
           - ${{ github.workspace }}/.devcontainer/schemaspy/postgresql-42.4.0.jar:/postgresql-42.4.0.jar
           - ${{ github.workspace }}/.devcontainer/schemaspy/make.sh:/make.sh
     steps:
+      - name: change permission
+        run: |
+          chmod -R 777  +x ${{ github.workspace }}/.devcontainer
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
