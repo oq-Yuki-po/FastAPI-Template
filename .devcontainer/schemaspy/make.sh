@@ -1,3 +1,6 @@
+env
+ls -l
+
 /usr/local/bin/schemaspy \
 -u ${POSTGRES_USER} \
 -host ${POSTGRES_SERVER} \
