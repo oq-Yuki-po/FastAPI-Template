@@ -1,6 +1,7 @@
 name: OpenAPI and SchemaSpy Document Generator
 
-on: [push]
+on:
+  workflow_call:
 env:
   POSTGRES_USER: postgres
   POSTGRES_DB: sample
