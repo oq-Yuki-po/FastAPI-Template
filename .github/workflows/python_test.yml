@@ -9,7 +9,7 @@ env:
   POSTGRES_PORT: 5432
   PYTHONPATH: ${{ github.workspace }}
 jobs:
-  build:
+  test-python:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,4 +38,5 @@ jobs:
         run: |
           pytest -v
   docs-deploy:
+    needs: test-python
     uses: ./.github/workflows/docs.yml
