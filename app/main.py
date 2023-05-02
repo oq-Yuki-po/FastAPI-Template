@@ -1,6 +1,7 @@
 import yaml
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
+from fastapi_versioning import VersionedFastAPI
 
 from app.middleware.exception_middleware import ExceptionMiddleware
 from app.models.setting import initialize_db, initialize_table
@@ -16,6 +17,11 @@ app = FastAPI(title=APP_TITLE,
 
 app.include_router(book_router)
 app.add_middleware(ExceptionMiddleware)
+
+app = VersionedFastAPI(app,
+                       version_format='{major}.{minor}',
+                       prefix_format='/v{major}.{minor}',
+                       enable_latest=True)
 
 
 @app.on_event("startup")

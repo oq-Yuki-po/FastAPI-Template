@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query
 
+from app import app_logger
 from app.api.book_info_fetcher import BookInfoFetcher
 from app.errors.custom_exception import CustomException
 from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, ExternalApiError
@@ -57,8 +58,10 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
         return BookSaveOut(message=f'Book {book_in.title} saved successfully')
 
     except BookAlreadyExistsError as error:
+        app_logger.error(error.__class__.__name__)
+        app_logger.error(error)
         session.rollback()
-        raise CustomException(message=error.message, status_code=error.status_code) from error
+        raise CustomException(detail=error.message, status_code=error.status_code) from error
 
 
 @router.post("/openbd",
@@ -66,6 +69,8 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
              responses={
                  404: {"model": BookNotFoundErrorOut,
                        "description": "Book not found"},
+                 409: {"model": BookAlreadyExistsErrorOut,
+                       "description": "Book already exists"},
                  500: {"model": Root500ErrorClass,
                        "description": "Internal Server Error"},
                  503: {"model": ExternalApiErrorOut,
@@ -116,16 +121,20 @@ async def create_book_openbd(isbn: Annotated[str,
         return BookSaveOut(message=f'Book {book_info.title} saved successfully')
 
     except BookAlreadyExistsError as error:
+        app_logger.error(error.__class__.__name__)
+        app_logger.error(error)
         session.rollback()
-        raise CustomException(message=error.message, status_code=error.status_code) from error
+        raise CustomException(detail=error.message, status_code=error.status_code) from error
 
     except BookNotFoundError as error:
+        app_logger.error(error.__class__.__name__)
         session.rollback()
-        raise CustomException(message=error.message, status_code=error.status_code) from error
+        raise CustomException(detail=error.message, status_code=error.status_code) from error
 
     except ExternalApiError as error:
+        app_logger.error(error.__class__.__name__)
         session.rollback()
-        raise CustomException(message=error.message, status_code=error.status_code) from error
+        raise CustomException(detail=error.message, status_code=error.status_code) from error
 
 
 @router.get("/",

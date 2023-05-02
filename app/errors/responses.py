@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Union
 
 from pydantic import BaseModel
@@ -5,40 +6,48 @@ from pydantic import BaseModel
 from app.errors.message import ErrorMessage
 
 
+@dataclass
 class InternalServerErrorOut(BaseModel):
 
-    message: str = ErrorMessage.INTERNAL_SERVER_ERROR
+    detail: str = ErrorMessage.INTERNAL_SERVER_ERROR
 
 
+@dataclass
 class InvalidRequestErrorOut(BaseModel):
 
-    message: str = ErrorMessage.INVALID_REQUEST
+    detail: str = ErrorMessage.INVALID_REQUEST
 
 
+@dataclass
 class DataBaseErrorOut(BaseModel):
 
-    message: str = ErrorMessage.DATABASE_ERROR
+    detail: str = ErrorMessage.DATABASE_ERROR
 
 
+@dataclass
 class DataBaseConnectionErrorOut(BaseModel):
 
-    message: str = ErrorMessage.DATABASE_CONNECTION_ERROR
+    detail: str = ErrorMessage.DATABASE_CONNECTION_ERROR
 
 
+@dataclass
 class Root500ErrorClass(BaseModel):
     __root__: Union[InternalServerErrorOut, DataBaseErrorOut, DataBaseConnectionErrorOut]
 
 
+@dataclass
 class BookAlreadyExistsErrorOut(BaseModel):
 
-    message: str = ErrorMessage.BOOK_ALREADY_EXISTS
+    detail: str = ErrorMessage.BOOK_ALREADY_EXISTS
 
 
+@dataclass
 class BookNotFoundErrorOut(BaseModel):
 
-    message: str = ErrorMessage.BOOK_NOT_FOUND
+    detail: str = ErrorMessage.BOOK_NOT_FOUND
 
 
+@dataclass
 class ExternalApiErrorOut(BaseModel):
 
-    message: str = ErrorMessage.EXTERNAL_API_ERROR
+    detail: str = ErrorMessage.EXTERNAL_API_ERROR

@@ -16,7 +16,7 @@ def test_create_book_with_valid_data(app_client: TestClient, db_session: Session
                          author_name="test author",
                          isbn="9784798157578",
                          cover_path="test/path")
-    response = app_client.post("/books/", json=book_in.dict())
+    response = app_client.post("/v1.0/books/", json=book_in.dict())
     saved_book = db_session.scalars(select(BookModel).where(BookModel.isbn == book_in.isbn)).first()
     saved_author = db_session.scalars(select(AuthorModel).where(AuthorModel.id == saved_book.author_id)).first()
     other_books = db_session.scalars(select(BookModel).where(BookModel.isbn != book_in.isbn)).all()
@@ -45,9 +45,9 @@ def test_create_book_with_invalid_data(app_client: TestClient, db_session: Sessi
                          author_name="test author",
                          isbn="9784798157578",
                          cover_path="test/path")
-    response = app_client.post("/books/", json=book_in.dict())
+    response = app_client.post("/v1.0/books/", json=book_in.dict())
     assert response.status_code == BookAlreadyExistsError.status_code
-    assert response.json() == {"message": BookAlreadyExistsError.message}
+    assert response.json() == {"detail": BookAlreadyExistsError.message}
 
 
 def test_create_book_openbd_valid_data(app_client: TestClient, mocker, db_session: Session) -> None:
@@ -74,7 +74,7 @@ def test_create_book_openbd_valid_data(app_client: TestClient, mocker, db_sessio
     mocker.patch("app.api.book_info_fetcher.requests.get", return_value=mock_obj)
     mocker.patch("app.api.book_info_fetcher.BookInfo.save_image", return_value=f"test/path/{test_isbn}.jpg")
 
-    response = app_client.post(f"/books/openbd?isbn={test_isbn}")
+    response = app_client.post(f"/v1.0/books/openbd?isbn={test_isbn}")
 
     saved_book = db_session.scalars(select(BookModel).where(BookModel.isbn == test_isbn)).first()
     saved_author = db_session.scalars(select(AuthorModel).where(AuthorModel.id == saved_book.author_id)).first()
@@ -98,9 +98,9 @@ def test_create_book_openbd_invalid_data(app_client: TestClient, mocker) -> None
 
     mocker.patch("app.api.book_info_fetcher.BookInfoFetcher.fetch", return_value=None)
 
-    response = app_client.post("/books/openbd?isbn=9784798157578")
+    response = app_client.post("/v1.0/books/openbd?isbn=9784798157578")
     assert response.status_code == BookNotFoundError.status_code
-    assert response.json() == {"message": BookNotFoundError.message}
+    assert response.json() == {"detail": BookNotFoundError.message}
 
 
 def test_create_book_openbd_book_already_exists(app_client: TestClient, mocker, db_session: Session) -> None:
@@ -131,10 +131,10 @@ def test_create_book_openbd_book_already_exists(app_client: TestClient, mocker, 
     db_session.add(book)
     db_session.commit()
 
-    response = app_client.post(f"/books/openbd?isbn={test_isbn}")
+    response = app_client.post(f"/v1.0/books/openbd?isbn={test_isbn}")
 
     assert response.status_code == BookAlreadyExistsError.status_code
-    assert response.json() == {"message": BookAlreadyExistsError.message}
+    assert response.json() == {"detail": BookAlreadyExistsError.message}
 
 
 def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -> None:
@@ -144,6 +144,6 @@ def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -
 
     mocker.patch("app.api.book_info_fetcher.BookInfoFetcher.fetch", side_effect=ExternalApiError)
 
-    response = app_client.post("/books/openbd?isbn=9784798157578")
+    response = app_client.post("/v1.0/books/openbd?isbn=9784798157578")
     assert response.status_code == ExternalApiError.status_code
-    assert response.json() == {"message": ExternalApiError.message}
+    assert response.json() == {"detail": ExternalApiError.message}
