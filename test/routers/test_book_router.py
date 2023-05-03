@@ -1,11 +1,11 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, ExternalApiError
 from app.models import AuthorModel, BookModel
 from app.models.factories import BookFactory
 from app.schemas.requests import BookSaveIn
-from sqlalchemy.orm import Session
 
 
 def test_create_book_with_valid_data(app_client: TestClient, db_session: Session) -> None:
