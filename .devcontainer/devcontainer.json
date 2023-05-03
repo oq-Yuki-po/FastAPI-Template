@@ -52,7 +52,7 @@
 				],
 				"python.linting.pylintArgs": [
 					"--enable=F,E,C,R",
-					"--disable=E1101,C0111, W0105",
+					"--disable=E1101,C0111, W0105, C0103",
 					"--max-line-length=120"
 				],
 				"python.formatting.autopep8Args": [

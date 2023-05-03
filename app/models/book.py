@@ -65,9 +65,8 @@ class BookModel(BaseModel):
             session.add(self)
             session.flush()
             return self.id
-        else:
-            app_logger.error("Book title: %s isbn: %s already exists", self.title, self.isbn)
-            raise BookAlreadyExistsError
+        app_logger.error("Book title: %s isbn: %s already exists", self.title, self.isbn)
+        raise BookAlreadyExistsError
 
     @classmethod
     def fetch_by_isbn(cls, isbn) -> Optional[BookModel]:
@@ -103,7 +102,7 @@ class BookModel(BaseModel):
             order_by(cls.id).\
             limit(limit).\
             offset(offset)
-        """SQL
+        """SQL Statement
             SELECT public.books.id,
                 public.books.title,
                 public.books.isbn,

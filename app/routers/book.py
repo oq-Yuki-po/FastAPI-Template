@@ -44,6 +44,9 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     ------
     BookAlreadyExistsError
         If the book already exists in the database
+
+    CustomException
+        If the book already exists in the database
     ```
     """
     try:
@@ -102,6 +105,12 @@ async def create_book_openbd(isbn: Annotated[str,
         If the book is not found in the OpenBD API
     ExternalApiError
         If the OpenBD API returns an error response
+        Or if the OpenBD API is not available
+        Or if the OpenBD API returns an unexpected response
+    CustomException
+        If the book already exists in the database
+        Or if the book is not found in the OpenBD API
+        Or if the OpenBD API returns an error response
         Or if the OpenBD API is not available
         Or if the OpenBD API returns an unexpected response
     ```

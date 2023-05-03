@@ -27,7 +27,7 @@ session = scoped_session(
 )
 
 
-class Base(object):
+class Base():
     """BaseModel Class
 
     Attributes
