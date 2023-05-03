@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from sqlalchemy import Column, Integer, String, select
 
@@ -41,8 +41,7 @@ class AuthorModel(BaseModel):
             session.add(self)
             session.flush()
             return self.id
-        else:
-            return author.id
+        return author.id
 
     @classmethod
     def fetch_by_name(cls, name: str) -> Optional[AuthorModel]:
@@ -65,7 +64,7 @@ class AuthorModel(BaseModel):
         return fetch_result
 
     @classmethod
-    def fetch_all(cls) -> Optional[List[AuthorModel]]:
+    def fetch_all(cls) -> Optional[list[AuthorModel]]:
         """著者全権取得
 
         Returns
