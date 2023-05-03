@@ -45,12 +45,11 @@ class BookInfo():
         """
         if self.cover is None:
             return None
-        else:
-            res = requests.get(self.cover, timeout=10)
-            res.raise_for_status()
-            with open(f"{directory_path}/{self.isbn}.jpg", "wb") as f:
-                f.write(res.content)
-            return f"{directory_path}/{self.isbn}.jpg"
+        res = requests.get(self.cover, timeout=10)
+        res.raise_for_status()
+        with open(f"{directory_path}/{self.isbn}.jpg", "wb") as f:
+            f.write(res.content)
+        return f"{directory_path}/{self.isbn}.jpg"
 
 
 class BookInfoFetcher:
@@ -108,8 +107,7 @@ class BookInfoFetcher:
         if (book_info := self.fetch()) is None:
             app_logger.error("Book not found: %s", self.isbn)
             raise BookNotFoundError
-        else:
-            return BookInfo(title=book_info["summary"]["title"],
-                            author=book_info["summary"]["author"],
-                            isbn=self.isbn,
-                            cover=book_info["summary"].get("cover"))
+        return BookInfo(title=book_info["summary"]["title"],
+                        author=book_info["summary"]["author"],
+                        isbn=self.isbn,
+                        cover=book_info["summary"].get("cover"))

@@ -40,13 +40,6 @@
 				"python.autoComplete.extraPaths": [
 					"/usr/local/lib/python3.11/site-packages"
 				],
-				"isort.path": ["/usr/local/py-utils/bin/isort"],
-				"isort.args": [
-					"--line-width",
-					"120",
-					"-p",
-					"app"
-				],
 				"editor.rulers": [
 					120
 				],
@@ -62,10 +55,20 @@
 					"120"
 				],
 				"[python]": {
+					"editor.formatOnSave": true,
 					"editor.codeActionsOnSave": {
 						"source.organizeImports": true
 					}
 				},
+				"isort.path": [
+					"/usr/local/py-utils/bin/isort"
+				],
+				"isort.args": [
+					"--profile",
+					"black",
+					"--line-width",
+					"120"
+				],
 				"files.insertFinalNewline": true,
 				"files.trimTrailingWhitespace": true,
 				"[markdown]": {
@@ -93,7 +96,6 @@
 			"coenraads.bracket-pair-colorizer",
 			"saikou9901.evilinspector",
 			"streetsidesoftware.code-spell-checker",
-			"gruntfuggly.todo-tree",
 			"ionutvmi.path-autocomplete",
 			"ms-azuretools.vscode-docker",
 			"mtxr.sqltools",
