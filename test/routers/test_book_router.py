@@ -117,9 +117,9 @@ def test_create_book_openbd_book_already_exists(app_client: TestClient, mocker, 
     mock_obj.json.return_value = [
         {
             "summary": {
-                "title": test_author,
+                "title": test_title,
                 "author": test_author,
-                "isbn": test_author,
+                "isbn": test_isbn,
                 "cover": test_cover
             }
         }
@@ -146,4 +146,4 @@ def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -
 
     response = app_client.post("/v1.0/books/openbd?isbn=9784798157578")
     assert response.status_code == ExternalApiError.status_code
-    assert response.json() == {"detail": ExternalApiError.message}
+    assert response.json() == {"detail": ExternalApiError.status_code}
