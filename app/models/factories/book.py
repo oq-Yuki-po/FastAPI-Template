@@ -1,9 +1,9 @@
 import random
+from datetime import datetime
 
 import factory
 from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
-from sqlalchemy import func
 
 from app.models import BookModel, session
 from app.models.factories.author import AuthorFactory
@@ -19,5 +19,5 @@ class BookFactory(SQLAlchemyModelFactory):
     isbn = Sequence(lambda n: str(random.randrange(10**12, 10**13)))
     cover_path = Sequence(lambda n: f'book_cover_path_{n}.png')
     author = factory.SubFactory(AuthorFactory)
-    created_at = func.now()
-    updated_at = func.now()
+    created_at = datetime.now()
+    updated_at = datetime.now()

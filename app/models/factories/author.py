@@ -1,6 +1,7 @@
+from datetime import datetime
+
 from factory import Sequence
 from factory.alchemy import SQLAlchemyModelFactory
-from sqlalchemy import func
 
 from app.models import AuthorModel, session
 
@@ -12,5 +13,5 @@ class AuthorFactory(SQLAlchemyModelFactory):
         sqlalchemy_session = session
 
     name = Sequence(lambda n: f'author_name_{n}')
-    created_at = func.now()
-    updated_at = func.now()
+    created_at = datetime.now()
+    updated_at = datetime.now()
