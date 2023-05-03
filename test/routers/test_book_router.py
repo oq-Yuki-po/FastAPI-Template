@@ -117,7 +117,7 @@ def test_create_book_openbd_book_already_exists(app_client: TestClient, mocker, 
     mock_obj.json.return_value = [
         {
             "summary": {
-                "title": test_title,
+                "title": test_author,
                 "author": test_author,
                 "isbn": test_isbn,
                 "cover": test_cover
