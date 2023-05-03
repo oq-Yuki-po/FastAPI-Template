@@ -119,7 +119,7 @@ def test_create_book_openbd_book_already_exists(app_client: TestClient, mocker, 
             "summary": {
                 "title": test_author,
                 "author": test_author,
-                "isbn": test_isbn,
+                "isbn": test_author,
                 "cover": test_cover
             }
         }
