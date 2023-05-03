@@ -103,5 +103,6 @@
 			"gencay.vscode-chatgpt"
 		]
 	},
+	"postCreateCommand": "bash .devcontainer/post-create.sh",
 	"remoteUser": "vscode"
 }
