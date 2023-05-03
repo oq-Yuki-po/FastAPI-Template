@@ -1,11 +1,11 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, ExternalApiError
 from app.models import AuthorModel, BookModel
 from app.models.factories import BookFactory
 from app.schemas.requests import BookSaveIn
+from sqlalchemy.orm import Session
 
 
 def test_create_book_with_valid_data(app_client: TestClient, db_session: Session) -> None:
@@ -146,4 +146,4 @@ def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -
 
     response = app_client.post("/v1.0/books/openbd?isbn=9784798157578")
     assert response.status_code == ExternalApiError.status_code
-    assert response.json() == {"detail": ExternalApiError.status_code}
+    assert response.json() == {"detail": ExternalApiError.message}
