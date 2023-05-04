@@ -8,16 +8,17 @@ from app.errors.custom_exception import CustomException
 from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, ExternalApiError
 from app.errors.responses import BookAlreadyExistsErrorOut, BookNotFoundErrorOut, ExternalApiErrorOut, Root500ErrorClass
 from app.models import AuthorModel, BookModel, session
+from app.routers.setting import AppRoutes
 from app.schemas.requests import BookSaveIn
 from app.schemas.responses import BookGetAllOut, BookGetOut, BookSaveOut
 
 router = APIRouter(
-    prefix="/books",
-    tags=["books"]
+    prefix=AppRoutes.Books.PREFIX,
+    tags=[AppRoutes.Books.TAG],
 )
 
 
-@router.post("/",
+@router.post(AppRoutes.Books.POST_URL,
              response_model=BookSaveOut,
              responses={
                  409: {"model": BookAlreadyExistsErrorOut,
@@ -67,7 +68,7 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
         raise CustomException(detail=error.message, status_code=error.status_code) from error
 
 
-@router.post("/openbd",
+@router.post(AppRoutes.Books.POST_OPENBD_URL,
              response_model=BookSaveOut,
              responses={
                  404: {"model": BookNotFoundErrorOut,
@@ -146,7 +147,7 @@ async def create_book_openbd(isbn: Annotated[str,
         raise CustomException(detail=error.message, status_code=error.status_code) from error
 
 
-@router.get("/",
+@router.get(AppRoutes.Books.GET_URL,
             response_model=BookGetAllOut,
             responses={
                 500: {"model": Root500ErrorClass,
