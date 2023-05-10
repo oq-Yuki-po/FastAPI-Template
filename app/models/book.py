@@ -30,7 +30,7 @@ class BookModel(BaseModel):
                  isbn: str,
                  cover_path: str,
                  author_id: Optional[int] = None,
-                 author: Optional[AuthorModel] = None,
+                 authors: Optional[AuthorModel] = None,
                  created_at: Optional[datetime] = None,
                  updated_at: Optional[datetime] = None) -> None:
         self.title = title
@@ -39,8 +39,8 @@ class BookModel(BaseModel):
         self.author_id = author_id
         self.created_at = created_at
         self.updated_at = updated_at
-        if author is not None:
-            self.authors = author
+        if authors is not None:
+            self.authors = authors
         if author_id is not None:
             self.author_id = author_id
 

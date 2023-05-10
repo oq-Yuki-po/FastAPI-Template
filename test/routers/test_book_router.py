@@ -7,6 +7,7 @@ from app.models import AuthorModel, BookModel
 from app.models.factories import BookFactory
 from app.routers.setting import AppRoutes
 from app.schemas.requests import BookSaveIn
+from app.schemas.responses import BookGetAllOut, BookGetOut
 
 TEST_URL = f"{AppRoutes.API_VERSION}{AppRoutes.Books.PREFIX}"
 
@@ -150,3 +151,24 @@ def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -
     response = app_client.post(f"{TEST_URL}{AppRoutes.Books.POST_OPENBD_URL}?isbn=9784798157578")
     assert response.status_code == ExternalApiError.status_code
     assert response.json() == {"detail": ExternalApiError.message}
+
+
+def test_get_books(app_client: TestClient, db_session: Session) -> None:
+    """
+    Test get_books
+    """
+
+    book1 = BookFactory()
+    book2 = BookFactory()
+    db_session.add_all([book1, book2])
+    db_session.commit()
+
+    response = app_client.get(f"{TEST_URL}{AppRoutes.Books.GET_URL}?offset=0&limit=10")
+    assert response.status_code == 200
+
+    expected_result = BookGetAllOut(books=[BookGetOut(id=i.id,
+                                           title=i.title,
+                                           author_name=i.authors.name,
+                                           isbn=i.isbn) for i in [book1, book2]])
+
+    assert response.json() == expected_result.dict()
