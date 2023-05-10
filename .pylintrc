@@ -108,7 +108,8 @@ disable=
     cyclic-import,
     import-error,
     consider-alternative-union-syntax,
-    pointless-string-statement
+    pointless-string-statement,
+    missing-raises-doc
 
 [REPORTS]
 

@@ -164,11 +164,10 @@ def test_get_books(app_client: TestClient, db_session: Session) -> None:
     db_session.commit()
 
     response = app_client.get(f"{TEST_URL}{AppRoutes.Books.GET_URL}?offset=0&limit=10")
-    assert response.status_code == 200
 
     expected_result = BookGetAllOut(books=[BookGetOut(id=i.id,
-                                           title=i.title,
-                                           author_name=i.authors.name,
-                                           isbn=i.isbn) for i in [book1, book2]])
-
+                                                      title=i.title,
+                                                      author_name=i.authors.name,
+                                                      isbn=i.isbn) for i in [book1, book2]])
+    assert response.status_code == 200
     assert response.json() == expected_result.dict()

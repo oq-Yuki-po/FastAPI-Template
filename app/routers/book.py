@@ -45,9 +45,6 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     ------
     BookAlreadyExistsError
         If the book already exists in the database
-
-    CustomException
-        If the book already exists in the database
     ```
     """
     try:
@@ -66,6 +63,8 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
         app_logger.error(error)
         session.rollback()
         raise CustomException(detail=error.message, status_code=error.status_code) from error
+    finally:
+        session.close()
 
 
 @router.post(AppRoutes.Books.POST_OPENBD_URL,
@@ -108,12 +107,6 @@ async def create_book_openbd(isbn: Annotated[str,
         If the OpenBD API returns an error response
         Or if the OpenBD API is not available
         Or if the OpenBD API returns an unexpected response
-    CustomException
-        If the book already exists in the database
-        Or if the book is not found in the OpenBD API
-        Or if the OpenBD API returns an error response
-        Or if the OpenBD API is not available
-        Or if the OpenBD API returns an unexpected response
     ```
     """
     try:
@@ -145,6 +138,8 @@ async def create_book_openbd(isbn: Annotated[str,
         app_logger.error(error.__class__.__name__)
         session.rollback()
         raise CustomException(detail=error.message, status_code=error.status_code) from error
+    finally:
+        session.close()
 
 
 @router.get(AppRoutes.Books.GET_URL,
@@ -165,10 +160,13 @@ async def get_all_books(offset: int = Query(default=0, ge=0),
         BookGetAllOut object
     ```
     """
-    books = BookModel.fetch_all(offset=offset, limit=limit)
+    try:
+        books = BookModel.fetch_all(offset=offset, limit=limit)
 
-    return BookGetAllOut(books=[BookGetOut(id=i.id,
-                                           title=i.title,
-                                           author_name=i.author_name,
-                                           isbn=i.isbn,
-                                           ) for i in books])
+        return BookGetAllOut(books=[BookGetOut(id=i.id,
+                                               title=i.title,
+                                               author_name=i.author_name,
+                                               isbn=i.isbn,
+                                               ) for i in books])
+    finally:
+        session.close()
