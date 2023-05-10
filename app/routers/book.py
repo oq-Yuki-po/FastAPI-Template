@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Query
+from fastapi_versioning import version
 
 from app import app_logger
 from app.api.book_info_fetcher import BookInfoFetcher
@@ -26,6 +27,7 @@ router = APIRouter(
                  500: {"model": Root500ErrorClass,
                        "description": "Internal Server Error"}
              })
+@version(1, 0)
 async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     """
     create_book is a function that creates a book.
@@ -79,6 +81,7 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
                  503: {"model": ExternalApiErrorOut,
                        "description": "External API Error"}
              })
+@version(1, 0)
 async def create_book_openbd(isbn: Annotated[str,
                                              Query(title="ISBN code",
                                                    min_length=13,
@@ -148,6 +151,7 @@ async def create_book_openbd(isbn: Annotated[str,
                 500: {"model": Root500ErrorClass,
                       "description": "Internal Server Error"}
             })
+@version(1, 0)
 async def get_all_books(offset: int = Query(default=0, ge=0),
                         limit: int = Query(default=25, le=100)) -> BookGetAllOut:
     """
