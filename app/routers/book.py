@@ -153,8 +153,13 @@ async def create_book_openbd(isbn: Annotated[str,
             })
 @handle_errors
 @version(1, 0)
-async def get_all_books(offset: int = Query(default=0, ge=0),
-                        limit: int = Query(default=25, le=100)) -> BookGetAllOut:
+async def get_all_books(offset: int = Query(default=0,
+                                            ge=0,
+                                            description="offset of the book list"),
+                        limit: int = Query(default=25,
+                                           ge=1,
+                                           le=100,
+                                           description="limit of the book list")) -> BookGetAllOut:
     """
     get_all_books is a function that gets all books.
 
