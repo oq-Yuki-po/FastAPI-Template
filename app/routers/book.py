@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Query
 from fastapi_versioning import version
 
-from app import app_logger
+from app import app_logger, handle_errors
 from app.api.book_info_fetcher import BookInfoFetcher
 from app.errors.custom_exception import CustomException
 from app.errors.exceptions import BookAlreadyExistsError, BookNotFoundError, ExternalApiError
@@ -27,6 +27,7 @@ router = APIRouter(
                  500: {"model": Root500ErrorClass,
                        "description": "Internal Server Error"}
              })
+@handle_errors
 @version(1, 0)
 async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     """
@@ -62,7 +63,6 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
 
     except BookAlreadyExistsError as error:
         app_logger.error(error.__class__.__name__)
-        app_logger.error(error)
         session.rollback()
         raise CustomException(detail=error.message, status_code=error.status_code) from error
     finally:
@@ -81,6 +81,7 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
                  503: {"model": ExternalApiErrorOut,
                        "description": "External API Error"}
              })
+@handle_errors
 @version(1, 0)
 async def create_book_openbd(isbn: Annotated[str,
                                              Query(title="ISBN code",
@@ -128,7 +129,6 @@ async def create_book_openbd(isbn: Annotated[str,
 
     except BookAlreadyExistsError as error:
         app_logger.error(error.__class__.__name__)
-        app_logger.error(error)
         session.rollback()
         raise CustomException(detail=error.message, status_code=error.status_code) from error
 
@@ -151,6 +151,7 @@ async def create_book_openbd(isbn: Annotated[str,
                 500: {"model": Root500ErrorClass,
                       "description": "Internal Server Error"}
             })
+@handle_errors
 @version(1, 0)
 async def get_all_books(offset: int = Query(default=0, ge=0),
                         limit: int = Query(default=25, le=100)) -> BookGetAllOut:

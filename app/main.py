@@ -16,12 +16,13 @@ app = FastAPI(title=APP_TITLE,
               description=APP_DESCRIPTION)
 
 app.include_router(book_router)
-app.add_middleware(ExceptionMiddleware)
 
 app = VersionedFastAPI(app,
                        version_format='{major}.{minor}',
                        prefix_format='/v{major}.{minor}',
                        enable_latest=False)
+
+app.add_middleware(ExceptionMiddleware)
 
 
 @app.on_event("startup")

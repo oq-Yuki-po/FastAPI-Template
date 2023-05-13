@@ -1,35 +1,34 @@
-from fastapi import HTTPException
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import SQLAlchemyError
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from app.errors.custom_exception import CustomException
+from app import app_logger
 from app.errors.message import ErrorMessage
 
 
 class ExceptionMiddleware:
-    def __init__(self, app):
+    def __init__(self, app: ASGIApp):
         self.app = app
 
-    async def __call__(self, scope, receive, send):
-        try:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+
+        if scope["type"] != "http":
             await self.app(scope, receive, send)
-        except CustomException as exc:
-            response = JSONResponse(status_code=exc.status_code,
-                                    content={"detail": exc.detail})
-            await response(scope, receive, send)
-        except HTTPException as exc:
-            response = JSONResponse(status_code=exc.status_code,
-                                    content={"detail": exc.detail})
-            await response(scope, receive, send)
-        except SQLAlchemyError as exc:
+            return
+
+        response_started = False
+
+        async def sender(message: Message) -> None:
+            nonlocal response_started
+
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+
+        try:
+            await self.app(scope, receive, sender)
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            app_logger.error(exc)
             response = JSONResponse(status_code=500,
-                                    content={"message": ErrorMessage.INTERNAL_SERVER_ERROR})
-            await response(scope, receive, send)
-        except OSError as exc:
-            response = JSONResponse(status_code=500,
-                                    content={"message": ErrorMessage.INTERNAL_SERVER_ERROR})
-            await response(scope, receive, send)
-        except Exception as exc: # pylint: disable=broad-exception-caught
-            response = JSONResponse(status_code=500,
-                                    content={"message": ErrorMessage.INTERNAL_SERVER_ERROR})
-            await response(scope, receive, send)
+                                    content={"detail": ErrorMessage.INTERNAL_SERVER_ERROR})
+            if not response_started:
+                await response(scope, receive, send)
