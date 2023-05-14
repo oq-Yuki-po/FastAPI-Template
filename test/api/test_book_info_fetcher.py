@@ -5,7 +5,7 @@ from app.api.book_info_fetcher import BookInfo, BookInfoFetcher
 from app.errors.exceptions import BookNotFoundError, ExternalApiError
 
 
-class TestBookInfoFercher():
+class TestBookInfoFetcher():
     """
     Test class for BookInfoFetcher
     """
