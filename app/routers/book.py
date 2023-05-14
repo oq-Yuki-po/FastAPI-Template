@@ -12,6 +12,7 @@ from app.models import AuthorModel, BookModel, session
 from app.routers.setting import AppRoutes
 from app.schemas.requests import BookSaveIn
 from app.schemas.responses import BookGetAllOut, BookGetOut, BookSaveOut
+from app.utils.image_convert import ImageBase64
 
 router = APIRouter(
     prefix=AppRoutes.Books.PREFIX,
@@ -176,6 +177,7 @@ async def get_all_books(offset: int = Query(default=0,
         return BookGetAllOut(books=[BookGetOut(id=i.id,
                                                title=i.title,
                                                author_name=i.author_name,
+                                               cover_base64_image=ImageBase64.encode(i.cover_path),
                                                isbn=i.isbn,
                                                ) for i in books])
     finally:

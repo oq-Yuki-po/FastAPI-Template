@@ -8,6 +8,7 @@ from app.models.factories import BookFactory
 from app.routers.setting import AppRoutes
 from app.schemas.requests import BookSaveIn
 from app.schemas.responses import BookGetAllOut, BookGetOut
+from app.utils import ImageBase64
 
 TEST_URL = f"{AppRoutes.API_VERSION}{AppRoutes.Books.PREFIX}"
 
@@ -153,14 +154,20 @@ def test_create_book_openbd_external_api_error(app_client: TestClient, mocker) -
     assert response.json() == {"detail": ExternalApiError.message}
 
 
-def test_get_books(app_client: TestClient, db_session: Session) -> None:
+def test_get_books(app_client: TestClient, db_session: Session, make_image) -> None:
     """
     Test get_books
     """
 
-    book1 = BookFactory()
-    book2 = BookFactory()
-    db_session.add_all([book1, book2])
+    sample_image_path_1 = make_image("sample_1.png")
+    sample_image_path_2 = make_image("sample_2.png")
+    sample_image_path_3 = make_image("sample_3.png")
+
+    book1 = BookFactory(cover_path=sample_image_path_1)
+    book2 = BookFactory(cover_path=sample_image_path_2)
+    book3 = BookFactory(cover_path=sample_image_path_3)
+
+    db_session.add_all([book1, book2, book3])
     db_session.commit()
 
     response = app_client.get(f"{TEST_URL}{AppRoutes.Books.GET_URL}?offset=0&limit=10")
@@ -168,6 +175,8 @@ def test_get_books(app_client: TestClient, db_session: Session) -> None:
     expected_result = BookGetAllOut(books=[BookGetOut(id=i.id,
                                                       title=i.title,
                                                       author_name=i.authors.name,
-                                                      isbn=i.isbn) for i in [book1, book2]])
+                                                      cover_base64_image=ImageBase64.
+                                                      encode(i.cover_path).decode("utf-8"),
+                                                      isbn=i.isbn) for i in [book1, book2, book3]])
     assert response.status_code == 200
     assert response.json() == expected_result.dict()

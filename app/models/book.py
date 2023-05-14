@@ -98,6 +98,7 @@ class BookModel(BaseModel):
         stmt = select(cls.id,
                       cls.title,
                       cls.isbn,
+                      cls.cover_path,
                       AuthorModel.name.label("author_name")).join(cls.authors).\
             order_by(cls.id).\
             limit(limit).\
@@ -106,6 +107,7 @@ class BookModel(BaseModel):
             SELECT public.books.id,
                 public.books.title,
                 public.books.isbn,
+                public.books.cover_path,
                 public.authors.name AS author_name FROM public.books
                 JOIN public.authors ON public.authors.id = public.books.author_id
             ORDER BY public.books.id
