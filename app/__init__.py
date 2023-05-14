@@ -26,7 +26,7 @@ def handle_errors(func):
         except SQLAlchemyError as exc:
             app_logger.error(exc)
             raise HTTPException(detail=ErrorMessage.INTERNAL_SERVER_ERROR, status_code=500) from exc
-        except Exception as exc:  # pylint: disable=broad-exception-caught
+        except Exception as exc:
             app_logger.error(exc)
             raise HTTPException(detail=ErrorMessage.INTERNAL_SERVER_ERROR, status_code=500) from exc
     return wrapper

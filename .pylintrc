@@ -109,7 +109,8 @@ disable=
     import-error,
     consider-alternative-union-syntax,
     pointless-string-statement,
-    missing-raises-doc
+    missing-raises-doc,
+    no-name-in-module
 
 [REPORTS]
 
