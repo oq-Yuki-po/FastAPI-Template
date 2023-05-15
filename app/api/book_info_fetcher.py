@@ -22,11 +22,29 @@ class BookInfo():
         isbn of the book
     cover : str
         cover image url of the book
+    published_at : str
+        published date of the book
     """
     title: str
     author: str
     isbn: str
     cover: str
+    published_at: str
+
+    def __post_init__(self):
+        """
+        Post initialization of BookInfo class
+        convert published_at to YYYY-MM-DD format
+        if published_at is None, set 1990-01-01
+        or if published_at is not in YYYYMMDD format, set 1990-01-01
+        """
+        try:
+            if self.published_at is not None:
+                self.published_at = f"{self.published_at[:4]}-{self.published_at[4:6]}-{self.published_at[6:]}"
+            else:
+                self.published_at = "1990-01-01"
+        except IndexError:
+            self.published_at = "1990-01-01"
 
     def save_image(self, directory_path: str) -> Optional[str]:
         """
@@ -110,4 +128,5 @@ class BookInfoFetcher:
         return BookInfo(title=book_info["summary"]["title"],
                         author=book_info["summary"]["author"],
                         isbn=self.isbn,
-                        cover=book_info["summary"].get("cover"))
+                        cover=book_info["summary"].get("cover"),
+                        published_at=book_info["summary"].get("pubdate"))

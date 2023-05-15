@@ -23,7 +23,8 @@ class TestBookInfoFetcher():
                     "title": "スタートライン : 一歩踏み出せば奇跡は起こる",
                     "author": "喜多川泰／著",
                     "isbn": "9784799311783",
-                    "cover": "https://cover.openbd.jp/9784799311783.jpg"
+                    "cover": "https://cover.openbd.jp/9784799311783.jpg",
+                    "pubdate": "20060401"
                 }
             }
         ]
@@ -33,6 +34,7 @@ class TestBookInfoFetcher():
         assert book_info["summary"]["author"] == "喜多川泰／著"
         assert book_info["summary"]["isbn"] == "9784799311783"
         assert book_info["summary"]["cover"] == "https://cover.openbd.jp/9784799311783.jpg"
+        assert book_info["summary"]["pubdate"] == "20060401"
 
     def test_fetch_api_request_timeout(self, mocker):
         """
@@ -64,7 +66,8 @@ class TestBookInfoFetcher():
                     "title": "スタートライン : 一歩踏み出せば奇跡は起こる",
                     "author": "喜多川泰／著",
                     "isbn": " 9784799311783",
-                    "cover": "https://cover.openbd.jp/9784799311783.jpg"
+                    "cover": "https://cover.openbd.jp/9784799311783.jpg",
+                    "pubdate": "20060401"
                 }
             }
         ]
@@ -74,6 +77,7 @@ class TestBookInfoFetcher():
         assert book_info.author == "喜多川泰／著"
         assert book_info.isbn == "9784799311783"
         assert book_info.cover == "https://cover.openbd.jp/9784799311783.jpg"
+        assert book_info.published_at == "2006-04-01"
 
     def test_get_book_info_not_found(self, mocker):
         """
@@ -99,11 +103,13 @@ class TestBookInfo():
         book_info = BookInfo(title="Pythonではじめる機械学習",
                              author="高橋 貴之",
                              isbn="9784798150402",
-                             cover="https://cover.openbd.jp/9784798150402.jpg")
+                             cover="https://cover.openbd.jp/9784798150402.jpg",
+                             published_at="20170525")
         assert book_info.title == "Pythonではじめる機械学習"
         assert book_info.author == "高橋 貴之"
         assert book_info.isbn == "9784798150402"
         assert book_info.cover == "https://cover.openbd.jp/9784798150402.jpg"
+        assert book_info.published_at == "2017-05-25"
 
     def test_save_image_cover_path_exist(self, tmpdir):
         """
@@ -113,7 +119,8 @@ class TestBookInfo():
         book_info = BookInfo(title="Pythonではじめる機械学習",
                              author="高橋 貴之",
                              isbn="9784798150402",
-                             cover="https://cover.openbd.jp/9784798150402.jpg")
+                             cover="https://cover.openbd.jp/9784798150402.jpg",
+                             published_at="20170525")
         save_result = book_info.save_image(str(tmpdir))
         assert save_result == f"{tmpdir}/9784798150402.jpg"
         assert len(tmpdir.listdir()) == 1
@@ -127,7 +134,8 @@ class TestBookInfo():
         book_info = BookInfo(title="Pythonではじめる機械学習",
                              author="高橋 貴之",
                              isbn="9784798150402",
-                             cover=None)
+                             cover=None,
+                             published_at="20170525")
         save_result = book_info.save_image(str(tmpdir))
         assert save_result is None
         assert len(tmpdir.listdir()) == 0
