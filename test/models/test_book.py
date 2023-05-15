@@ -40,8 +40,8 @@ class TestBookModel():
         book = BookModel(title="test book",
                          isbn="9784774142232",
                          cover_path="test/path",
-                         authors=AuthorFactory()
-                         )
+                         authors=AuthorFactory(),
+                         published_at="2020-01-01")
         book_id = book.save()
         db_session.commit()
 
@@ -62,7 +62,8 @@ class TestBookModel():
         duplicated_book = BookModel(title="test book",
                                     isbn=expected_isbn,
                                     cover_path="test/path",
-                                    authors=AuthorFactory()
+                                    authors=AuthorFactory(),
+                                    published_at="2020-01-01"
                                     )
 
         with pytest.raises(BookAlreadyExistsError):

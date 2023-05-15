@@ -20,7 +20,8 @@ def test_create_book_with_valid_data(app_client: TestClient, db_session: Session
     book_in = BookSaveIn(title="test title",
                          author_name="test author",
                          isbn="9784798157578",
-                         cover_path="test/path")
+                         cover_path="test/path",
+                         published_at="2021-11-01")
     response = app_client.post(f"{TEST_URL}{AppRoutes.Books.POST_URL}", json=book_in.dict())
     saved_book = db_session.scalars(select(BookModel).where(BookModel.isbn == book_in.isbn)).first()
     saved_author = db_session.scalars(select(AuthorModel).where(AuthorModel.id == saved_book.author_id)).first()
@@ -49,7 +50,8 @@ def test_create_book_with_invalid_data(app_client: TestClient, db_session: Sessi
     book_in = BookSaveIn(title="test title",
                          author_name="test author",
                          isbn="9784798157578",
-                         cover_path="test/path")
+                         cover_path="test/path",
+                         published_at="2021-11-01")
     response = app_client.post(f"{TEST_URL}{AppRoutes.Books.POST_URL}", json=book_in.dict())
     assert response.status_code == BookAlreadyExistsError.status_code
     assert response.json() == {"detail": BookAlreadyExistsError.message}
@@ -72,7 +74,8 @@ def test_create_book_openbd_valid_data(app_client: TestClient, mocker, db_sessio
                 "title": test_title,
                 "author": test_author,
                 "isbn": test_isbn,
-                "cover": test_cover
+                "cover": test_cover,
+                "pubdate": "20211101"
             }
         }
     ]
@@ -177,6 +180,8 @@ def test_get_books(app_client: TestClient, db_session: Session, make_image) -> N
                                                       author_name=i.authors.name,
                                                       cover_base64_image=ImageBase64.
                                                       encode(i.cover_path).decode("utf-8"),
-                                                      isbn=i.isbn) for i in [book1, book2, book3]])
+                                                      isbn=i.isbn,
+                                                      published_at=str(i.published_at.isoformat()))
+                                           for i in [book1, book2, book3]])
     assert response.status_code == 200
     assert response.json() == expected_result.dict()

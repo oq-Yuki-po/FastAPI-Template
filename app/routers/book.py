@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Query
@@ -53,10 +54,16 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
     """
     try:
 
+        datetime.strptime(book_in.published_at, '%Y-%m-%d')
+
         author = AuthorModel(name=book_in.author_name)
         author_id = author.register()
 
-        book = BookModel(title=book_in.title, author_id=author_id, isbn=book_in.isbn, cover_path=book_in.cover_path)
+        book = BookModel(title=book_in.title,
+                         author_id=author_id,
+                         isbn=book_in.isbn,
+                         cover_path=book_in.cover_path,
+                         published_at=book_in.published_at)
         book.save()
         session.commit()
 
@@ -66,6 +73,9 @@ async def create_book(book_in: BookSaveIn) -> BookSaveOut:
         app_logger.error(error.__class__.__name__)
         session.rollback()
         raise CustomException(detail=error.message, status_code=error.status_code) from error
+    except ValueError as error:
+        session.rollback()
+        raise CustomException(detail='published_at must be YYYY-MM-DD format', status_code=500) from error
     finally:
         session.close()
 
@@ -122,7 +132,11 @@ async def create_book_openbd(isbn: Annotated[str,
         author = AuthorModel(name=book_info.author)
         author_id = author.register()
 
-        book = BookModel(title=book_info.title, author_id=author_id, isbn=book_info.isbn, cover_path=cover_path)
+        book = BookModel(title=book_info.title,
+                         author_id=author_id,
+                         isbn=book_info.isbn,
+                         cover_path=cover_path,
+                         published_at=book_info.published_at)
         book.save()
         session.commit()
 
@@ -179,6 +193,7 @@ async def get_all_books(offset: int = Query(default=0,
                                                author_name=i.author_name,
                                                cover_base64_image=ImageBase64.encode(i.cover_path),
                                                isbn=i.isbn,
+                                               published_at=str(i.published_at.isoformat())
                                                ) for i in books])
     finally:
         session.close()
