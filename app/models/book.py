@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Column, ForeignKey, Integer, String, select
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, select
 from sqlalchemy.engine.row import Row
 from sqlalchemy.orm import relationship
 
@@ -19,9 +19,10 @@ class BookModel(BaseModel):
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(256), nullable=False, comment='book title')
-    author_id = Column(Integer, ForeignKey(AuthorModel.id))
+    author_id = Column(Integer, ForeignKey(AuthorModel.id), nullable=False, comment='author id')
     isbn = Column(String(13), unique=True, nullable=False, comment='book isbn')
     cover_path = Column(String(256), unique=True, nullable=False, server_default="none", comment='book cover path')
+    published_at = Column(Date, nullable=False, comment='book published date')
 
     authors = relationship(AuthorModel, backref="books")
 
@@ -29,6 +30,7 @@ class BookModel(BaseModel):
                  title: str,
                  isbn: str,
                  cover_path: str,
+                 published_at: str,
                  author_id: Optional[int] = None,
                  authors: Optional[AuthorModel] = None,
                  created_at: Optional[datetime] = None,
@@ -36,6 +38,7 @@ class BookModel(BaseModel):
         self.title = title
         self.isbn = isbn
         self.cover_path = cover_path
+        self.published_at = published_at
         self.author_id = author_id
         self.created_at = created_at
         self.updated_at = updated_at
@@ -45,7 +48,7 @@ class BookModel(BaseModel):
             self.author_id = author_id
 
     def __repr__(self) -> str:
-        return f"<BookModel(title={self.title}, isbn={self.isbn},"\
+        return f"<BookModel(title={self.title}, isbn={self.isbn}, published_at={self.published_at}, "\
             f"cover_path={self.cover_path}, author_id={self.author_id})>"
 
     def save(self) -> None:
@@ -99,6 +102,7 @@ class BookModel(BaseModel):
                       cls.title,
                       cls.isbn,
                       cls.cover_path,
+                      cls.published_at,
                       AuthorModel.name.label("author_name")).join(cls.authors).\
             order_by(cls.id).\
             limit(limit).\
@@ -108,6 +112,7 @@ class BookModel(BaseModel):
                 public.books.title,
                 public.books.isbn,
                 public.books.cover_path,
+                public.books.published_at,
                 public.authors.name AS author_name FROM public.books
                 JOIN public.authors ON public.authors.id = public.books.author_id
             ORDER BY public.books.id
