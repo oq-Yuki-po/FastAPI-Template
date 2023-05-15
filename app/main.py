@@ -5,7 +5,7 @@ from fastapi_versioning import VersionedFastAPI
 
 from app.middleware.exception_middleware import ExceptionMiddleware
 from app.models.setting import initialize_db, initialize_table
-from app.routers import book_router
+from app.routers import author_router, book_router
 
 APP_TITLE = "FastAPI Template"
 APP_VERSION = "1.0"
@@ -16,6 +16,7 @@ app = FastAPI(title=APP_TITLE,
               description=APP_DESCRIPTION)
 
 app.include_router(book_router)
+app.include_router(author_router)
 
 app = VersionedFastAPI(app,
                        version_format='{major}.{minor}',

@@ -60,12 +60,12 @@ class TestAuthorModel:
         db_session.add_all(authors)
         db_session.commit()
 
-        fetch_authors = AuthorModel.fetch_all()
+        fetch_authors = AuthorModel.fetch_all(offset=0, limit=expected_author_count)
 
         assert len(fetch_authors) == expected_author_count
 
     def test_fetch_all_data_is_none(self):
 
-        fetch_authors = AuthorModel.fetch_all()
+        fetch_authors = AuthorModel.fetch_all(offset=0, limit=10)
 
         assert len(fetch_authors) == 0
