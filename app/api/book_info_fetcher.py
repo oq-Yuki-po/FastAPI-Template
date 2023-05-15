@@ -61,7 +61,7 @@ class BookInfo():
             path of the cover image
             when cover image is not found, return None
         """
-        if self.cover is None:
+        if self.cover is None or self.cover == "":
             return None
         res = requests.get(self.cover, timeout=10)
         res.raise_for_status()
