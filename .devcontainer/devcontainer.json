@@ -45,7 +45,7 @@
 				],
 				"python.linting.pylintArgs": [
 					"--enable=F,E,C,R",
-					"--disable=E1101,C0111, W0105, C0103",
+					"--disable=E1101,C0111, W0105, C0103, E0611",
 					"--max-line-length=120"
 				],
 				"python.formatting.autopep8Args": [
@@ -89,7 +89,6 @@
 			}
 		},
 		"extensions": [
-			"ms-python.vscode-pylance",
 			"donjayamanne.githistory",
 			"eamodio.gitlens",
 			"njpwerner.autodocstring",
@@ -97,7 +96,6 @@
 			"saikou9901.evilinspector",
 			"streetsidesoftware.code-spell-checker",
 			"ionutvmi.path-autocomplete",
-			"ms-azuretools.vscode-docker",
 			"mtxr.sqltools",
 			"mtxr.sqltools-driver-pg",
 			"ms-vsliveshare.vsliveshare",
