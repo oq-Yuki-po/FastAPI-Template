@@ -40,8 +40,8 @@ class TestBookModel():
         book = BookModel(title="test book",
                          isbn="9784774142232",
                          cover_path="test/path",
-                         author=AuthorFactory()
-                         )
+                         authors=AuthorFactory(),
+                         published_at="2020-01-01")
         book_id = book.save()
         db_session.commit()
 
@@ -62,8 +62,26 @@ class TestBookModel():
         duplicated_book = BookModel(title="test book",
                                     isbn=expected_isbn,
                                     cover_path="test/path",
-                                    author=AuthorFactory()
+                                    authors=AuthorFactory(),
+                                    published_at="2020-01-01"
                                     )
 
         with pytest.raises(BookAlreadyExistsError):
             duplicated_book.save()
+
+    def test_fetch_all(self, db_session):
+        """
+        test fetch_all
+        """
+
+        expected_isbn_list = ["9784774142234", "9784774142235", "9784774142236",
+                              "9784774142237", "9784774142238", "9784774142239"]
+
+        db_session.add_all([BookFactory(isbn=isbn) for isbn in expected_isbn_list])
+        db_session.commit()
+
+        fetch_book = BookModel.fetch_all(offset=0, limit=10)
+
+        assert fetch_book is not None
+        assert len(fetch_book) == len(expected_isbn_list)
+        assert [book.isbn for book in fetch_book] == expected_isbn_list

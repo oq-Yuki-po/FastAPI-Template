@@ -29,12 +29,13 @@ class AuthorModel(BaseModel):
         return f"<AuthorModel(name={self.name})>"
 
     def register(self) -> int:
-        """登録処理
+        """
+        register author
 
         Returns
         -------
         int
-            著者ID
+            registered author id
         """
 
         if (author := self.fetch_by_name(self.name)) is None:
@@ -45,12 +46,13 @@ class AuthorModel(BaseModel):
 
     @classmethod
     def fetch_by_name(cls, name: str) -> Optional[AuthorModel]:
-        """著者名を条件に著者取得
+        """
+        fetch author by name
 
         Parameters
         ----------
         name : str
-            著者名
+            author name
 
         Returns
         -------
@@ -64,14 +66,31 @@ class AuthorModel(BaseModel):
         return fetch_result
 
     @classmethod
-    def fetch_all(cls) -> Optional[list[AuthorModel]]:
-        """著者全権取得
+    def fetch_all(cls, offset: int, limit: int) -> Optional[list[AuthorModel]]:
+        """
+        fetch all authors
+
+        Parameters
+        ----------
+        offset : int
+            offset
+        limit : int
+            limit
 
         Returns
         -------
         Optional[List[AuthorModel]|None]
         """
-        fetch_result = session.execute(select(cls)).all()
+        stmt = select(cls.id, cls.name).order_by(cls.id).limit(limit).offset(offset)
+        """SQL Statement
+            SELECT authors.id,
+                authors.name
+            FROM authors
+            ORDER BY authors.id
+            LIMIT :param_1 OFFSET :param_2
+        """
+
+        fetch_result = session.execute(stmt).all()
 
         return fetch_result
 

@@ -2,6 +2,7 @@ import os
 
 import pytest
 from fastapi.testclient import TestClient
+from PIL import Image
 from sqlalchemy.sql.ddl import CreateSchema, DropSchema
 from sqlalchemy_utils import database_exists
 from sqlalchemy_utils.functions.database import create_database
@@ -76,3 +77,26 @@ def db_session(request):
 
     request.addfinalizer(remove_session)
     return session
+
+
+@pytest.fixture()
+def make_image(tmpdir):
+    """make image and save to temp dir and return image path
+    """
+    def _make_image(image_name: str):
+        """_make_image_
+
+        Parameters
+        ----------
+        image_name : str
+            save image name
+        Returns
+        -------
+        str
+            image path
+        """
+        image_path = str(tmpdir.join(image_name))
+        image = Image.new('RGB', (100, 100))
+        image.save(image_path)
+        return image_path
+    return _make_image

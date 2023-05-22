@@ -13,7 +13,7 @@ ignore=CVS
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths and can be in Posix or Windows format.
-ignore-paths=
+; ignore-paths=./app/migration
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
@@ -108,8 +108,9 @@ disable=
     cyclic-import,
     import-error,
     consider-alternative-union-syntax,
-    pointless-string-statement
-
+    pointless-string-statement,
+    missing-raises-doc,
+    no-name-in-module
 
 [REPORTS]
 

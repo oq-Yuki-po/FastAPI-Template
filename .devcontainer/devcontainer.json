@@ -40,19 +40,12 @@
 				"python.autoComplete.extraPaths": [
 					"/usr/local/lib/python3.11/site-packages"
 				],
-				"isort.path": ["/usr/local/py-utils/bin/isort"],
-				"isort.args": [
-					"--line-width",
-					"120",
-					"-p",
-					"app"
-				],
 				"editor.rulers": [
 					120
 				],
 				"python.linting.pylintArgs": [
 					"--enable=F,E,C,R",
-					"--disable=E1101,C0111, W0105, C0103",
+					"--disable=E1101,C0111, W0105, C0103, E0611",
 					"--max-line-length=120"
 				],
 				"python.formatting.autopep8Args": [
@@ -62,10 +55,20 @@
 					"120"
 				],
 				"[python]": {
+					"editor.formatOnSave": true,
 					"editor.codeActionsOnSave": {
 						"source.organizeImports": true
 					}
 				},
+				"isort.path": [
+					"/usr/local/py-utils/bin/isort"
+				],
+				"isort.args": [
+					"--profile",
+					"black",
+					"--line-width",
+					"120"
+				],
 				"files.insertFinalNewline": true,
 				"files.trimTrailingWhitespace": true,
 				"[markdown]": {
@@ -86,16 +89,13 @@
 			}
 		},
 		"extensions": [
-			"ms-python.vscode-pylance",
 			"donjayamanne.githistory",
 			"eamodio.gitlens",
 			"njpwerner.autodocstring",
 			"coenraads.bracket-pair-colorizer",
 			"saikou9901.evilinspector",
 			"streetsidesoftware.code-spell-checker",
-			"gruntfuggly.todo-tree",
 			"ionutvmi.path-autocomplete",
-			"ms-azuretools.vscode-docker",
 			"mtxr.sqltools",
 			"mtxr.sqltools-driver-pg",
 			"ms-vsliveshare.vsliveshare",
@@ -103,5 +103,6 @@
 			"gencay.vscode-chatgpt"
 		]
 	},
+	"postCreateCommand": "bash .devcontainer/post-create.sh",
 	"remoteUser": "vscode"
 }

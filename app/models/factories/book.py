@@ -18,6 +18,7 @@ class BookFactory(SQLAlchemyModelFactory):
     title = Sequence(lambda n: f'book_title_{n}')
     isbn = Sequence(lambda n: str(random.randrange(10**12, 10**13)))
     cover_path = Sequence(lambda n: f'book_cover_path_{n}.png')
-    author = factory.SubFactory(AuthorFactory)
+    authors = factory.SubFactory(AuthorFactory)
+    published_at = datetime.now()
     created_at = datetime.now()
     updated_at = datetime.now()

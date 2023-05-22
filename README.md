@@ -8,7 +8,7 @@ cd app
 gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000 --log-config logging.conf --reload
 ```
 
-access to https://localhost/docs
+access to https://localhost/v1.0/docs
 
 ## Run alembic migration
 

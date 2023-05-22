@@ -6,7 +6,15 @@ repos:
         entry: pytest -v -s test
         stages:
             - "push"
-            - "commit"
+        language: system
+        pass_filenames: false
+        always_run: true
+        types: [python]
+    -   id: pylint
+        name: pylint
+        entry: pylint --rcfile=.pylintrc ./app/
+        stages:
+            - "push"
         language: system
         pass_filenames: false
         always_run: true
