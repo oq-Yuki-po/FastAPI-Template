@@ -24,45 +24,28 @@
 						"password": "postgres"
 					}
 				],
-				"python.defaultInterpreterPath": "/usr/local/bin/python",
 				"python.languageServer": "Pylance",
-				"python.linting.enabled": true,
-				"python.linting.pylintEnabled": true,
-				"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
-				"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
-				"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
-				"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
-				"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
-				"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
-				"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
-				"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
-				"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
-				"python.autoComplete.extraPaths": [
-					"/usr/local/lib/python3.11/site-packages"
-				],
 				"editor.rulers": [
 					120
 				],
-				"python.linting.pylintArgs": [
+				"pylint.args": [
 					"--enable=F,E,C,R",
 					"--disable=E1101,C0111, W0105, C0103, E0611",
 					"--max-line-length=120"
 				],
-				"python.formatting.autopep8Args": [
+				"autopep8.args": [
 					"--ignore",
 					"E70",
 					"--max-line-length",
 					"120"
 				],
 				"[python]": {
+					"editor.defaultFormatter": "ms-python.autopep8",
 					"editor.formatOnSave": true,
 					"editor.codeActionsOnSave": {
 						"source.organizeImports": true
 					}
 				},
-				"isort.path": [
-					"/usr/local/py-utils/bin/isort"
-				],
 				"isort.args": [
 					"--profile",
 					"black",
@@ -83,24 +66,20 @@
 				"python.testing.pytestArgs": [
 					"test"
 				],
-				"python.testing.unittestEnabled": false,
-				"python.testing.nosetestsEnabled": false,
 				"python.testing.pytestEnabled": true
 			}
 		},
 		"extensions": [
-			"donjayamanne.githistory",
-			"eamodio.gitlens",
 			"njpwerner.autodocstring",
-			"coenraads.bracket-pair-colorizer",
-			"saikou9901.evilinspector",
 			"streetsidesoftware.code-spell-checker",
 			"ionutvmi.path-autocomplete",
 			"mtxr.sqltools",
 			"mtxr.sqltools-driver-pg",
 			"ms-vsliveshare.vsliveshare",
 			"GitHub.copilot",
-			"gencay.vscode-chatgpt"
+			"gencay.vscode-chatgpt",
+			"ms-python.isort",
+			"ms-python.autopep8"
 		]
 	},
 	"postCreateCommand": "bash .devcontainer/post-create.sh",
