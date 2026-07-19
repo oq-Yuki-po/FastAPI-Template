@@ -22,10 +22,10 @@ async def get_current_user(db: DbSession, token: Annotated[str, Depends(oauth2_s
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        email = decode_access_token(token)
+        user_id = decode_access_token(token)
     except jwt.InvalidTokenError as error:
         raise credentials_error from error
-    user = await db.scalar(select(User).where(User.email == email))
+    user = await db.scalar(select(User).where(User.id == user_id))
     if user is None or not user.is_active:
         raise credentials_error
     return user

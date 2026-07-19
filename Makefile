@@ -1,4 +1,4 @@
-.PHONY: install run test lint format migrate up down
+.PHONY: install run test lint security format migrate up down
 
 install:
 	uv sync
@@ -13,6 +13,11 @@ lint:
 	uv run ruff check .
 	uv run ruff format --check .
 	uv run mypy app
+
+security:
+	uv run bandit -q -r app
+	uv export --locked --no-dev --format requirements-txt --output-file /tmp/fastapi-template-requirements.txt
+	uv run pip-audit --disable-pip --requirement /tmp/fastapi-template-requirements.txt
 
 format:
 	uv run ruff check --fix .

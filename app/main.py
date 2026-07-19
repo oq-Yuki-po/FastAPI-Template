@@ -30,6 +30,8 @@ def create_app() -> FastAPI:
     )
     application.add_middleware(
         CORSMiddleware,
+        # Origins are explicit because credentialed CORS must never reflect an
+        # arbitrary caller. Settings validation rejects the wildcard form.
         allow_origins=settings.cors_origins,
         allow_credentials=True,
         allow_methods=["*"],

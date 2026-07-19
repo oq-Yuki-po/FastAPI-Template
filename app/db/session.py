@@ -13,5 +13,7 @@ async def get_db() -> AsyncIterator[AsyncSession]:
         try:
             yield session
         except Exception:
+            # A failed request must not leak a pending transaction into a pooled
+            # connection that may be reused by an unrelated request.
             await session.rollback()
             raise

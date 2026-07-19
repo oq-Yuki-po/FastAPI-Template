@@ -10,5 +10,5 @@ def test_book_requires_thirteen_digit_isbn() -> None:
             title="A book",
             isbn="not-an-isbn",
             author_name="An author",
-            published_at="2026-01-01",  # type: ignore[arg-type]
+            published_at="2026-01-01",
         )

@@ -56,6 +56,7 @@ curl -X POST http://localhost:8000/api/v1/auth/token \
 ```bash
 make test       # テストとカバレッジ
 make lint       # Ruff + mypy
+make security   # Bandit + 依存関係の脆弱性監査
 make format     # 自動整形
 make migrate    # DBを最新へ更新
 ```
@@ -112,3 +113,4 @@ TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5433/app_test
 - `.env` の `SECRET_KEY` を十分長いランダム値に変更してください。
 - HTTPS終端、シークレット管理、DBバックアップはデプロイ先で設定してください。
 - デプロイ時はアプリ起動前に `alembic upgrade head` を一度実行してください。
+- レート制限やトークン失効など、デプロイ側で必要な対策は [SECURITY.md](SECURITY.md) を参照してください。
