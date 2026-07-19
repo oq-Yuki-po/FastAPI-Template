@@ -13,3 +13,13 @@ async def test_user_repository_finds_user_by_email_and_id(db_session: AsyncSessi
 
     assert await repository.get_by_email(user.email) is user
     assert await repository.get_by_id(user.id) is user
+
+
+async def test_user_repository_returns_none_and_rolls_back(db_session: AsyncSession) -> None:
+    repository = UserRepository(db_session)
+    repository.add(User(email="rollback@example.com", hashed_password="hash"))
+
+    await repository.rollback()
+
+    assert await repository.get_by_email("rollback@example.com") is None
+    assert await repository.get_by_id(999) is None

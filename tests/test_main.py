@@ -1,7 +1,7 @@
 from httpx import ASGITransport, AsyncClient
 
 from app.core.config import Settings
-from app.main import app, create_app
+from app.main import app, create_app, lifespan
 
 
 def test_openapi_contains_versioned_routes() -> None:
@@ -52,3 +52,26 @@ async def test_untrusted_host_is_rejected() -> None:
         response = await client.get("/api/v1/health/live")
 
     assert response.status_code == 400
+
+
+async def test_lifespan_completes_startup_and_shutdown() -> None:
+    async with lifespan(app):
+        pass
+
+
+async def test_unhandled_exception_returns_generic_error() -> None:
+    test_app = create_app(Settings(_env_file=None))
+
+    @test_app.get("/explode")
+    async def explode() -> None:
+        raise RuntimeError("database credentials leaked")
+
+    async with AsyncClient(
+        transport=ASGITransport(app=test_app, raise_app_exceptions=False),
+        base_url="http://test",
+    ) as client:
+        response = await client.get("/explode")
+
+    assert response.status_code == 500
+    assert response.json() == {"detail": "Internal server error"}
+    assert "credentials" not in response.text

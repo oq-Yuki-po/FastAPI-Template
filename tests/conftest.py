@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
+from tests.factories import BookCreateFactory, UserCreateFactory
 
 
 @pytest.fixture
@@ -34,3 +35,23 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+async def authenticated_headers(client: AsyncClient) -> dict[str, str]:
+    credentials = UserCreateFactory.build(password="a-secure-password")
+    registration = await client.post(
+        "/api/v1/auth/register", json=credentials.model_dump(mode="json")
+    )
+    assert registration.status_code == 201
+    login = await client.post(
+        "/api/v1/auth/token",
+        data={"username": str(credentials.email), "password": credentials.password},
+    )
+    assert login.status_code == 200
+    return {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+
+@pytest.fixture
+def book_payload() -> dict[str, object]:
+    return BookCreateFactory.build().model_dump(mode="json")
