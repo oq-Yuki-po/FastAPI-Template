@@ -8,6 +8,8 @@
 - SQLAlchemy 2 async + PostgreSQL 18 + Alembic
 - JWT Bearer認証とArgon2パスワードハッシュ
 - lifespan、CORS、環境変数設定、JSONログ
+- Service / Repository層による業務ロジックとDBアクセスの分離
+- development / test / staging / production別のdotenv設定
 - liveness/readiness probe
 - pytest + SQLiteによる高速テスト、PostgreSQLによるDB統合テスト
 - Ruff、mypy、pre-commit、GitHub Actions
@@ -18,23 +20,22 @@
 必要なものはPython 3.12以上とuv 0.11.29以上です。
 
 ```bash
-cp .env.example .env
+cp .env.development.example .env.development
 uv sync
-docker compose -f .docker/compose.yaml up -d db
-uv run alembic upgrade head
-uv run fastapi dev app/main.py
+docker compose --env-file .env.development -f .docker/compose.yaml run --rm api alembic upgrade head
+docker compose --env-file .env.development -f .docker/compose.yaml up --build
 ```
 
 - API: <http://localhost:8000/api/v1>
 - Swagger UI: <http://localhost:8000/docs>
 - ReDoc: <http://localhost:8000/redoc>
 
-Dockerだけで起動する場合は、初回にマイグレーションを実行してからAPIを起動します。
+ホスト側でAPIを起動する場合は、`.env.development` のDBホストを `db` から `localhost` へ変更し、次を実行します。
 
 ```bash
-cp .env.example .env
-docker compose -f .docker/compose.yaml run --rm api alembic upgrade head
-docker compose -f .docker/compose.yaml up --build
+docker compose --env-file .env.development -f .docker/compose.yaml up -d db
+ENV_FILE=.env.development uv run alembic upgrade head
+ENV_FILE=.env.development uv run fastapi dev app/main.py
 ```
 
 ## API利用例
@@ -71,12 +72,14 @@ uv run alembic revision --autogenerate -m "describe change"
 
 ```text
 app/
-├── api/          # ルーターとFastAPI依存性
+├── api/          # HTTPルーターとFastAPI依存性
 ├── core/         # 設定、認証、ログ
 ├── db/           # Baseと非同期セッション
 ├── migration/    # Alembic migrations
 ├── models/       # SQLAlchemy models
+├── repositories/ # DBクエリと永続化
 ├── schemas/      # Pydantic API schemas
+├── services/     # 業務ロジックとトランザクション境界
 └── main.py       # application factory
 tests/            # app/と対応するテスト構成
 ├── api/          # app/api/の依存性・ルーターテスト
@@ -85,13 +88,36 @@ tests/            # app/と対応するテスト構成
 ├── db/           # app/db/のDBセッションテスト
 ├── migration/    # app/migration/の履歴テスト
 ├── models/       # app/models/の統合テスト
+├── repositories/ # app/repositories/のDBテスト
 ├── schemas/      # app/schemas/のバリデーションテスト
+├── services/     # app/services/の単体テスト
 └── test_main.py  # app/main.pyのアプリ構成テスト
 .docker/
 ├── Dockerfile
 ├── Dockerfile.dockerignore
 └── compose.yaml
 ```
+
+依存方向は `api -> services -> repositories -> db/models` です。RouterはHTTP入出力、Serviceは業務判断、RepositoryはSQLAlchemy操作に責務を限定しています。
+
+## 環境別設定
+
+環境ごとのサンプルをコピーして利用します。実値を含む `.env.*` はGit管理外です。
+
+```bash
+cp .env.development.example .env.development
+cp .env.test.example .env.test
+```
+
+`ENVIRONMENT=test` を指定すると `.env` と `.env.test` を順番に読み、後者で上書きします。任意のファイルを使う場合は `ENV_FILE` を指定できます。OS環境変数やコンテナから注入した値はdotenvより優先されます。
+
+```bash
+ENVIRONMENT=test uv run pytest
+ENV_FILE=/run/secrets/app.env fastapi run app/main.py
+ENV_FILE=../.env.development docker compose --env-file .env.development -f .docker/compose.yaml up
+```
+
+staging / productionではサンプル値をそのまま使わず、デプロイ先のSecret Manager等から `DATABASE_URL` と `SECRET_KEY` を注入してください。
 
 ## テスト用データベース
 
@@ -101,7 +127,7 @@ tests/            # app/と対応するテスト構成
 ローカルでPostgreSQLに対して実行する場合:
 
 ```bash
-docker compose -f .docker/compose.yaml --profile test up -d test-db
+docker compose --env-file .env.test -f .docker/compose.yaml --profile test up -d test-db
 TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5433/app_test \
   uv run pytest
 ```

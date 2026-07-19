@@ -1,11 +1,24 @@
 import pytest
 from pydantic import ValidationError
 
-from app.core.config import Settings
+from app.core.config import Settings, resolve_env_files
 
 
 def test_development_accepts_documented_defaults() -> None:
     assert Settings(_env_file=None).environment == "development"
+
+
+def test_environment_selects_matching_dotenv(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("ENV_FILE", raising=False)
+    monkeypatch.setenv("ENVIRONMENT", "test")
+
+    assert resolve_env_files() == (".env", ".env.test")
+
+
+def test_explicit_env_file_takes_precedence(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ENV_FILE", "/run/secrets/app.env")
+
+    assert resolve_env_files() == ("/run/secrets/app.env",)
 
 
 def test_production_rejects_repository_secret() -> None:

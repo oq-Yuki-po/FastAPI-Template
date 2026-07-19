@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 from typing import Literal
 
@@ -7,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=None,
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
@@ -47,9 +48,19 @@ class Settings(BaseSettings):
         return self
 
 
+def resolve_env_files() -> tuple[str, ...]:
+    """Select dotenv files without embedding environment-specific values in code."""
+    if env_file := os.getenv("ENV_FILE"):
+        return (env_file,)
+    environment = os.getenv("ENVIRONMENT", "development")
+    return (".env", f".env.{environment}")
+
+
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    # Process environment variables still take precedence over dotenv files,
+    # which keeps container and secret-manager injection predictable.
+    return Settings(_env_file=resolve_env_files())
 
 
 settings = get_settings()

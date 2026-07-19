@@ -103,6 +103,9 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
+!.env.example
+!.env.*.example
 .ruff_cache/
 .venv
 env/

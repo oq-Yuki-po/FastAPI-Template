@@ -4,11 +4,8 @@ services:
       context: ..
       dockerfile: .docker/Dockerfile
     env_file:
-      - path: ../.env
-        required: false
-    environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/app
-      SECRET_KEY: development-only-secret-key-change-this-value
+      - path: ${ENV_FILE:-../.env.development}
+        required: true
     ports:
       - "8000:8000"
     depends_on:
@@ -23,9 +20,9 @@ services:
   db:
     image: postgres:18-alpine
     environment:
-      POSTGRES_DB: app
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in the Compose env file}
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in the Compose env file}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in the Compose env file}
     ports:
       - "5432:5432"
     volumes:
@@ -40,9 +37,9 @@ services:
     image: postgres:18-alpine
     profiles: ["test"]
     environment:
-      POSTGRES_DB: app_test
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in the Compose env file}
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in the Compose env file}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in the Compose env file}
     ports:
       - "5433:5432"
     tmpfs:
