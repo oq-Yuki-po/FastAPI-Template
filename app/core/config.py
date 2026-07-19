@@ -60,7 +60,7 @@ def resolve_env_files() -> tuple[str, ...]:
     if env_file := os.getenv("ENV_FILE"):
         return (env_file,)
     environment = os.getenv("ENVIRONMENT", "development")
-    return (".env", f".env.{environment}")
+    return ("config/env/base.env", f"config/env/{environment}.env")
 
 
 @lru_cache

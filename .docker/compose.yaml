@@ -4,7 +4,7 @@ services:
       context: ..
       dockerfile: .docker/Dockerfile
     env_file:
-      - path: ${ENV_FILE:-../.env.development}
+      - path: ${ENV_FILE:-../config/env/development.env}
         required: true
     ports:
       - "8000:8000"

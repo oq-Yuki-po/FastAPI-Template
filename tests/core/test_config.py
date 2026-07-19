@@ -12,7 +12,7 @@ def test_environment_selects_matching_dotenv(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.delenv("ENV_FILE", raising=False)
     monkeypatch.setenv("ENVIRONMENT", "test")
 
-    assert resolve_env_files() == (".env", ".env.test")
+    assert resolve_env_files() == ("config/env/base.env", "config/env/test.env")
 
 
 def test_explicit_env_file_takes_precedence(monkeypatch: pytest.MonkeyPatch) -> None:
