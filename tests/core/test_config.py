@@ -10,7 +10,12 @@ def test_development_accepts_documented_defaults() -> None:
 
 def test_production_rejects_repository_secret() -> None:
     with pytest.raises(ValidationError, match="SECRET_KEY must be replaced"):
-        Settings(_env_file=None, environment="production")
+        Settings(
+            _env_file=None,
+            environment="production",
+            secret_key="change-me-in-production-change-me-in-production",
+            database_url="postgresql+asyncpg://app:private@db:5432/app",
+        )
 
 
 def test_production_accepts_private_secret() -> None:
