@@ -1,15 +1,5 @@
-FROM mcr.microsoft.com/devcontainers/python:0-3.11
+FROM mcr.microsoft.com/devcontainers/python:1-3.13-bookworm
 
-ENV PYTHONUNBUFFERED 1
-
-COPY app/pyproject.toml /tmp/pip-tmp/
-
-WORKDIR /tmp/pip-tmp/
-
-RUN pip install poetry \
-   && poetry config virtualenvs.create false \
-   && poetry install \
-   && rm -rf /tmp/pip-tmp
-
-WORKDIR  /var/log/gunicorn
-RUN chown -R vscode /var/log/gunicorn
+COPY --from=ghcr.io/astral-sh/uv:0.11.29 /uv /uvx /bin/
+ENV PYTHONUNBUFFERED=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
+WORKDIR /workspace

@@ -1,60 +1,48 @@
-import yaml
-from fastapi import FastAPI
-from fastapi.openapi.utils import get_openapi
-from fastapi_versioning import VersionedFastAPI
+import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
-from app.middleware.exception_middleware import ExceptionMiddleware
-from app.models.setting import initialize_db, initialize_table
-from app.routers import author_router, book_router
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-APP_TITLE = "FastAPI Template"
-APP_VERSION = "1.0"
-APP_DESCRIPTION = "This is a smple FastAPI template"
+from app.api.router import api_router
+from app.core.config import settings
+from app.core.logging import configure_logging
 
-app = FastAPI(title=APP_TITLE,
-              version=APP_VERSION,
-              description=APP_DESCRIPTION)
-
-app.include_router(book_router)
-app.include_router(author_router)
-
-app = VersionedFastAPI(app,
-                       version_format='{major}.{minor}',
-                       prefix_format='/v{major}.{minor}',
-                       enable_latest=False)
-
-app.add_middleware(ExceptionMiddleware)
+configure_logging(settings.log_level)
+logger = logging.getLogger(__name__)
 
 
-@app.on_event("startup")
-async def startup_event():
-    initialize_db()
-    initialize_table()
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    logger.info("Application starting")
+    yield
+    logger.info("Application stopping")
 
 
-def custom_openapi(api_version):
-    if app.openapi_schema:
-        return app.openapi_schema
-    for i in app.router.routes:
-        if i.path == f"/v{api_version}":
-            tarrget_router = i
-    openapi_schema = get_openapi(
-        title=APP_TITLE,
-        version=APP_VERSION,
-        description=APP_DESCRIPTION,
-        routes=tarrget_router.routes,
+def create_app() -> FastAPI:
+    application = FastAPI(
+        title=settings.app_name,
+        version="1.0.0",
+        debug=settings.debug,
+        lifespan=lifespan,
     )
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    application.include_router(api_router, prefix=settings.api_v1_prefix)
+
+    @application.exception_handler(Exception)
+    async def unhandled_exception(_request: Request, error: Exception) -> JSONResponse:
+        logger.exception("Unhandled application error", exc_info=error)
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+
+    return application
 
 
-def export_swagger():
-    api_versions = ["1.0"]
-
-    for api_version in api_versions:
-        with open(f"openapi_{api_version}.yaml", "w", encoding="utf-8") as file:
-            file.write(yaml.dump(custom_openapi(api_version)))
-
-
-if __name__ == "__main__":
-    export_swagger()
+app = create_app()

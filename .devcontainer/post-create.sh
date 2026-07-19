@@ -1,3 +1,5 @@
-pre-commit install -t pre-commit -t pre-push
-sudo apt-get update
-sudo apt-get install -y git-flow
+#!/usr/bin/env bash
+set -euo pipefail
+
+uv sync --locked
+uv run pre-commit install

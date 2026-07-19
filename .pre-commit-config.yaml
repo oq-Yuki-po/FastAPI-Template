@@ -1,21 +1,15 @@
 repos:
--   repo: local
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.4
     hooks:
-    -   id: test
-        name: test
-        entry: pytest -v -s test
-        stages:
-            - "push"
-        language: system
-        pass_filenames: false
-        always_run: true
-        types: [python]
-    -   id: pylint
-        name: pylint
-        entry: pylint --rcfile=.pylintrc ./app/
-        stages:
-            - "push"
-        language: system
-        pass_filenames: false
-        always_run: true
-        types: [python]
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: detect-private-key

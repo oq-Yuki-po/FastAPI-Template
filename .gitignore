@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
+.ruff_cache/
 .venv
 env/
 venv/
