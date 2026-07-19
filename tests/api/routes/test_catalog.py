@@ -20,9 +20,7 @@ async def test_create_and_list_book(
     authenticated_headers: dict[str, str],
     book_payload: dict[str, object],
 ) -> None:
-    created = await client.post(
-        "/api/v1/books", json=book_payload, headers=authenticated_headers
-    )
+    created = await client.post("/api/v1/books", json=book_payload, headers=authenticated_headers)
 
     assert created.status_code == 201
     assert created.json() == {
@@ -58,12 +56,8 @@ async def test_create_book_rejects_duplicate_isbn(
     authenticated_headers: dict[str, str],
     book_payload: dict[str, object],
 ) -> None:
-    first = await client.post(
-        "/api/v1/books", json=book_payload, headers=authenticated_headers
-    )
-    duplicate = await client.post(
-        "/api/v1/books", json=book_payload, headers=authenticated_headers
-    )
+    first = await client.post("/api/v1/books", json=book_payload, headers=authenticated_headers)
+    duplicate = await client.post("/api/v1/books", json=book_payload, headers=authenticated_headers)
 
     assert first.status_code == 201
     assert duplicate.status_code == 409
@@ -75,13 +69,9 @@ async def test_create_book_reuses_existing_author(
     authenticated_headers: dict[str, str],
     book_payload: dict[str, object],
 ) -> None:
-    first = await client.post(
-        "/api/v1/books", json=book_payload, headers=authenticated_headers
-    )
+    first = await client.post("/api/v1/books", json=book_payload, headers=authenticated_headers)
     second_payload = {**book_payload, "title": "Another book", "isbn": "9781449373320"}
-    second = await client.post(
-        "/api/v1/books", json=second_payload, headers=authenticated_headers
-    )
+    second = await client.post("/api/v1/books", json=second_payload, headers=authenticated_headers)
 
     authors = await client.get("/api/v1/authors")
     assert first.status_code == 201

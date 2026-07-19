@@ -105,9 +105,7 @@ async def test_login_rejects_inactive_user(client: AsyncClient, db_session: Asyn
 async def test_current_user_rejects_expired_token(client: AsyncClient) -> None:
     token = create_access_token(1, expires_delta=timedelta(seconds=-1))
 
-    response = await client.get(
-        "/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"}
-    )
+    response = await client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
 
     assert response.status_code == 401
     assert response.json() == {"detail": "Could not validate credentials"}
@@ -122,9 +120,7 @@ async def test_current_user_rejects_inactive_user(
     await db_session.commit()
     token = create_access_token(user.id)
 
-    response = await client.get(
-        "/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"}
-    )
+    response = await client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
 
     assert response.status_code == 401
     assert response.json() == {"detail": "Could not validate credentials"}
