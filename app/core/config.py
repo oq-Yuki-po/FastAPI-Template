@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     jwt_issuer: str = "fastapi-template"
     jwt_audience: str = "fastapi-template-api"
     cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8000"]
+    allowed_hosts: list[str] = ["localhost", "127.0.0.1", "test", "testserver"]
     log_level: str = "INFO"
 
     @model_validator(mode="after")
@@ -37,7 +38,11 @@ class Settings(BaseSettings):
             "change-me-in-production-change-me-in-production",
             "development-only-secret-key-change-this-value",
         }
-        if self.environment in {"staging", "production"} and self.secret_key in insecure_secrets:
+        secret_looks_like_placeholder = (
+            self.secret_key in insecure_secrets
+            or self.secret_key.lower().startswith(("replace", "change-me"))
+        )
+        if self.environment in {"staging", "production"} and secret_looks_like_placeholder:
             raise ValueError("SECRET_KEY must be replaced outside development and test")
         if self.environment in {"staging", "production"} and self.debug:
             raise ValueError("DEBUG must be disabled outside development and test")
@@ -45,6 +50,8 @@ class Settings(BaseSettings):
             raise ValueError("Default database credentials are forbidden in production")
         if "*" in self.cors_origins:
             raise ValueError("Wildcard CORS origins are incompatible with credentialed requests")
+        if self.environment in {"staging", "production"} and "*" in self.allowed_hosts:
+            raise ValueError("Wildcard ALLOWED_HOSTS is forbidden outside development and test")
         return self
 
 

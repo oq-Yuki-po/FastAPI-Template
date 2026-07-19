@@ -118,6 +118,7 @@ ENV_FILE=../.env.development docker compose --env-file .env.development -f .dock
 ```
 
 staging / productionではサンプル値をそのまま使わず、デプロイ先のSecret Manager等から `DATABASE_URL` と `SECRET_KEY` を注入してください。
+`ALLOWED_HOSTS` にはAPIのホスト名、`CORS_ORIGINS` には許可するフロントエンドの完全なオリジンだけを列挙します。本番ではSwagger、ReDoc、OpenAPI JSONは公開されません。
 
 ## テスト用データベース
 

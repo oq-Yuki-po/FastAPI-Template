@@ -81,3 +81,23 @@ def test_access_token_requires_numeric_subject() -> None:
     )
     with pytest.raises(jwt.InvalidTokenError):
         decode_access_token(token)
+
+
+@pytest.mark.parametrize("subject", ["0", "-1"])
+def test_access_token_requires_positive_subject(subject: str) -> None:
+    now = datetime.now(UTC)
+    token = jwt.encode(
+        {
+            "sub": subject,
+            "exp": now + timedelta(minutes=1),
+            "iat": now,
+            "nbf": now,
+            "iss": settings.jwt_issuer,
+            "aud": settings.jwt_audience,
+            "jti": "test-token",
+        },
+        settings.secret_key,
+        algorithm=ALGORITHM,
+    )
+    with pytest.raises(jwt.InvalidTokenError, match="positive user ID"):
+        decode_access_token(token)

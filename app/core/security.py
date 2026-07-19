@@ -53,6 +53,11 @@ def decode_access_token(token: str) -> int:
     if not isinstance(subject, str):
         raise jwt.InvalidTokenError("Token subject must be a user ID")
     try:
-        return int(subject)
+        user_id = int(subject)
     except ValueError as error:
         raise jwt.InvalidTokenError("Token subject must be a user ID") from error
+    # Database identifiers are positive. Rejecting zero/negative values avoids
+    # carrying malformed identity data into repository queries and audit logs.
+    if user_id <= 0:
+        raise jwt.InvalidTokenError("Token subject must be a positive user ID")
+    return user_id

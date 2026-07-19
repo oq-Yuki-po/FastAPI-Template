@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api.deps import AuthServiceDep, CurrentUser
@@ -23,7 +23,9 @@ async def register(payload: UserCreate, service: AuthServiceDep) -> User:
 
 @router.post("/token", response_model=Token)
 async def login(
-    form: Annotated[OAuth2PasswordRequestForm, Depends()], service: AuthServiceDep
+    form: Annotated[OAuth2PasswordRequestForm, Depends()],
+    service: AuthServiceDep,
+    response: Response,
 ) -> Token:
     try:
         access_token = await service.authenticate(form.username, form.password)
@@ -33,6 +35,10 @@ async def login(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         ) from error
+    # Bearer tokens are credentials. Explicit no-store directives prevent browsers
+    # and intermediary caches from retaining a successful login response.
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
     return Token(access_token=access_token)
 
 

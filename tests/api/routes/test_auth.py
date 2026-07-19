@@ -16,6 +16,8 @@ async def test_register_login_and_current_user(client: AsyncClient) -> None:
         data={"username": credentials["email"], "password": credentials["password"]},
     )
     assert logged_in.status_code == 200
+    assert logged_in.headers["cache-control"] == "no-store"
+    assert logged_in.headers["pragma"] == "no-cache"
     token = logged_in.json()["access_token"]
 
     current = await client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
