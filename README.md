@@ -98,6 +98,10 @@ tests/            # app/と対応するテスト構成
 ├── Dockerfile
 ├── Dockerfile.dockerignore
 └── compose.yaml
+docs/
+└── database/     # SQLAlchemyモデルから生成するSVGのER図
+tools/
+└── database/     # DB可視化などの開発支援ツール
 ```
 
 依存方向は `api -> services -> repositories -> db/models` です。RouterはHTTP入出力、Serviceは業務判断、RepositoryはSQLAlchemy操作に責務を限定しています。
@@ -121,6 +125,26 @@ docker compose --env-file config/env/development.env -f .docker/compose.yaml up
 
 staging / productionではサンプル値をそのまま使わず、デプロイ先のSecret Manager等から `DATABASE_URL` と `SECRET_KEY` を注入してください。
 `ALLOWED_HOSTS` にはAPIのホスト名、`CORS_ORIGINS` には許可するフロントエンドの完全なオリジンだけを列挙します。本番ではSwagger、ReDoc、OpenAPI JSONは公開されません。
+
+## DB構造の可視化
+
+[ERAlchemy2](https://pypi.org/project/eralchemy2/)でSQLAlchemyの `Base.metadata` を直接読み取ります。PostgreSQLの起動、接続情報、Alembicの実行は不要です。
+
+```bash
+make db-docs
+```
+
+ER図は `docs/database/schema.svg` と `docs/database/schema.png` に生成されます。生成物はモデルから再作成できるためGit管理外です。
+
+画像生成にはGraphvizが必要です。Dev Containerには導入済みです。ホストで実行する場合はOSに合わせてGraphvizをインストールしてください。
+
+```bash
+# macOS
+brew install graphviz
+
+# Debian / Ubuntu
+sudo apt-get install graphviz libgraphviz-dev
+```
 
 ## テスト用データベース
 

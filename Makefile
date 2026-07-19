@@ -1,4 +1,4 @@
-.PHONY: install run test lint security format migrate up down
+.PHONY: install run test lint security format migrate up down db-docs
 
 install:
 	uv sync
@@ -31,3 +31,6 @@ up:
 
 down:
 	docker compose -f .docker/compose.yaml down
+
+db-docs:
+	uv run python -m tools.database.generate_erd
