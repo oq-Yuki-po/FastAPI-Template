@@ -30,6 +30,14 @@ docker compose --env-file config/env/development.env -f .docker/compose.yaml up 
 - Swagger UI: <http://localhost:8000/docs>
 - ReDoc: <http://localhost:8000/redoc>
 
+より詳しい手順は次のガイドを参照してください。
+
+- [認証ガイド](docs/AUTHENTICATION.md) — 登録、ログイン、JWT検証の流れと運用上の注意
+- [設定リファレンス](docs/CONFIGURATION.md) — 全環境変数、dotenvの優先順位、安全な本番設定
+- [開発ガイド](docs/DEVELOPMENT.md) — Dev Container、テスト、マイグレーション、変更の追加方法
+- [デプロイガイド](docs/DEPLOYMENT.md) — コンテナ、起動順序、ヘルスチェック、運用チェックリスト
+- [トラブルシューティング](docs/TROUBLESHOOTING.md) — 起動、DB接続、認証でよくある問題
+
 ホスト側でAPIを起動する場合は、`config/env/development.env` のDBホストを `db` から `localhost` へ変更し、次を実行します。
 
 ```bash
